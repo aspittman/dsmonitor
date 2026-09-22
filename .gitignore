@@ -1,0 +1,7 @@
+venv/
+.domain_deps/
+.env
+__pycache__/
+.pytest_cache/
+data/*
+!data/.gitkeep

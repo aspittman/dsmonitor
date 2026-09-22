@@ -1,0 +1,9 @@
+{
+  "apollo_sender_email": "aaron@devspacetechnologies.com",
+  "topics": [
+    {"niche": "loans", "keywords": ["loan", "business funding"], "sales_file": "/home/aaron/MyBotz/devspace-one/data/domain_merchant/domain_sales.json"},
+    {"niche": "mortgage", "keywords": ["mortgage rates", "mortgage lender"]},
+    {"niche": "roofing", "keywords": ["roofing contractor"]},
+    {"niche": "tools", "keywords": ["tool shop"]}
+  ]
+}

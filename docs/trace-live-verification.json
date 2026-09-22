@@ -1,0 +1,372 @@
+{
+  "observed_at": "2026-09-22T06:42:41.060608+00:00",
+  "engines": [
+    {
+      "engine_id": "mmonolith",
+      "display_name": "MMonolith",
+      "status": "UNKNOWN",
+      "availability": "UNKNOWN",
+      "last_activity": "2026-09-21T13:01:25.059691+00:00",
+      "last_success": "2026-09-21T13:01:25.059691+00:00",
+      "checks": [
+        {
+          "name": "Local process",
+          "status": "UNKNOWN",
+          "reason": "No matching persistent process observed; these engines can run as batch jobs"
+        },
+        {
+          "name": "Logs",
+          "status": "HEALTHY",
+          "reason": "Bounded log tail; timestamps without a known timezone show time unknown; not a complete daily count"
+        },
+        {
+          "name": "Research store",
+          "status": "HEALTHY",
+          "reason": "Existing SQLite research tables readable; counts are UTC calendar-day totals"
+        },
+        {
+          "name": "Monitoring coverage",
+          "status": "UNKNOWN",
+          "reason": "Supabase / Database monitoring access is incomplete; this does not establish an engine failure"
+        },
+        {
+          "name": "Health coverage",
+          "status": "UNKNOWN",
+          "reason": "No health endpoint configured. Stored activity does not prove current health"
+        }
+      ],
+      "metrics": {
+        "Observations today": 0,
+        "Reports today": 0
+      }
+    },
+    {
+      "engine_id": "decision_engine",
+      "display_name": "Decision Engine",
+      "status": "UNKNOWN",
+      "availability": "UNKNOWN",
+      "last_activity": "2026-09-20T06:04:50.225446+00:00",
+      "last_success": "2026-09-20T06:04:50.225446+00:00",
+      "checks": [
+        {
+          "name": "Local process",
+          "status": "UNKNOWN",
+          "reason": "No matching persistent process observed; these engines can run as batch jobs"
+        },
+        {
+          "name": "Logs",
+          "status": "UNKNOWN",
+          "reason": "No readable log events available"
+        },
+        {
+          "name": "Monitoring coverage",
+          "status": "UNKNOWN",
+          "reason": "Supabase / Database monitoring access is incomplete; this does not establish an engine failure"
+        },
+        {
+          "name": "Health coverage",
+          "status": "UNKNOWN",
+          "reason": "No health endpoint configured. Stored activity does not prove current health"
+        }
+      ],
+      "metrics": {}
+    },
+    {
+      "engine_id": "devspace_one",
+      "display_name": "DevSpace One",
+      "status": "UNKNOWN",
+      "availability": "UNKNOWN",
+      "last_activity": null,
+      "last_success": null,
+      "checks": [
+        {
+          "name": "Local process",
+          "status": "UNKNOWN",
+          "reason": "No matching persistent process observed; these engines can run as batch jobs"
+        },
+        {
+          "name": "Logs",
+          "status": "HEALTHY",
+          "reason": "Bounded log tail; timestamps without a known timezone show time unknown; not a complete daily count"
+        },
+        {
+          "name": "Monitoring coverage",
+          "status": "UNKNOWN",
+          "reason": "Supabase / Database monitoring access is incomplete; this does not establish an engine failure"
+        },
+        {
+          "name": "Undated log errors",
+          "status": "UNKNOWN",
+          "reason": "5 error entries observed; age is unknown, so they do not establish current health"
+        },
+        {
+          "name": "Health coverage",
+          "status": "UNKNOWN",
+          "reason": "No health endpoint configured. Stored activity does not prove current health"
+        }
+      ],
+      "metrics": {}
+    },
+    {
+      "engine_id": "dsorchestrator",
+      "display_name": "dsorchestrator",
+      "status": "UNKNOWN",
+      "availability": "UNKNOWN",
+      "last_activity": null,
+      "last_success": null,
+      "checks": [
+        {
+          "name": "Local process",
+          "status": "UNKNOWN",
+          "reason": "No matching persistent process observed; these engines can run as batch jobs"
+        },
+        {
+          "name": "Logs",
+          "status": "UNKNOWN",
+          "reason": "No readable log events available"
+        },
+        {
+          "name": "Workflow state",
+          "status": "HEALTHY",
+          "reason": "Read-only workflow state available; 0 of 0 runs loaded"
+        },
+        {
+          "name": "Monitoring coverage",
+          "status": "UNKNOWN",
+          "reason": "Supabase / Database monitoring access is incomplete; this does not establish an engine failure"
+        },
+        {
+          "name": "Health coverage",
+          "status": "UNKNOWN",
+          "reason": "No health endpoint configured. Stored activity does not prove current health"
+        }
+      ],
+      "metrics": {}
+    },
+    {
+      "engine_id": "crm",
+      "display_name": "DevSpace CRM",
+      "status": "HEALTHY",
+      "availability": "ONLINE",
+      "last_activity": null,
+      "last_success": null,
+      "checks": [
+        {
+          "name": "CRM API",
+          "status": "HEALTHY",
+          "reason": "Authenticated read of organization API succeeded; frontend is not required"
+        },
+        {
+          "name": "CRM context freshness",
+          "status": "ONLINE",
+          "reason": "Oldest context observation: 2026-09-22T06:42:41.057767+00:00; refresh interval 120s"
+        }
+      ],
+      "metrics": {}
+    },
+    {
+      "engine_id": "supabase",
+      "display_name": "Supabase / Database",
+      "status": "ONLINE",
+      "availability": "ONLINE",
+      "last_activity": null,
+      "last_success": null,
+      "checks": [
+        {
+          "name": "Database connectivity",
+          "status": "ONLINE",
+          "reason": "PostgreSQL answered the read request with permission-denied code 42501"
+        },
+        {
+          "name": "Monitoring read access",
+          "status": "ERROR",
+          "reason": "The monitoring role cannot read organizations (42501). Database responded; engine permissions remain unverified."
+        }
+      ],
+      "metrics": {}
+    }
+  ],
+  "coverage": {
+    "status": "HEALTHY",
+    "reason": "Read-only workflow state available; 0 of 0 runs loaded",
+    "complete": true,
+    "total": 0
+  },
+  "process_count": 10,
+  "source_contexts": {
+    "06eaf14d-a535-4ccc-ad17-286da58d3fdd": {
+      "organization_services": 1,
+      "decision_constraints": 1,
+      "market_signals": 0,
+      "intelligence_reports": 8,
+      "intelligence_report_signals": 0,
+      "execution_results": 0,
+      "recommendations": 1,
+      "execution_requests": 0,
+      "predictions": 0,
+      "feedback_evaluations": 0,
+      "intelligence_report_feedback": 0,
+      "organizations": 1,
+      "execution_capabilities": 7,
+      "recommendation_evidence": 1
+    }
+  },
+  "observed_errors": 5,
+  "monitor_errors": [],
+  "trace_summary": {
+    "completed_today": 0,
+    "running": 0,
+    "waiting": 0,
+    "stalled": 0,
+    "failed": 0,
+    "observed_runs": 0,
+    "most_common_failing_service": null,
+    "most_common_failing_engine": null,
+    "most_common_failing_stage": null,
+    "oldest_stalled": null,
+    "most_recent_failure": null,
+    "scope": "Observed authoritative workflows retained locally; not ecosystem-wide totals. UTC days."
+  },
+  "traces": [
+    {
+      "id": "67fca995989036ddd2bdffea4acacd87",
+      "source_run_id": "crm-report:468531d0-2439-4aa3-a54b-065366e938f6",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "2072d424a03cf0e75286fa10f173b6e5",
+      "source_run_id": "crm-report:b64b4c1d-0b78-4ad7-9272-3016595870a5",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "9b9c051d448180b82ced49e1b7d27bbb",
+      "source_run_id": "crm-report:b64ac061-c70f-443d-a96f-818ddc38e9a9",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "36f6dd807220da59d858a31bc3309cdf",
+      "source_run_id": "crm-report:4eff2b6f-4045-4f20-a913-2991864eeafa",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "6390e5ed936f4060271e449e28d773a6",
+      "source_run_id": "crm:1b25db61-8b70-4bf5-b8bd-d9e28bc6be01",
+      "service": "unknown_service",
+      "status": "SKIPPED",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "decision_engine",
+          "stage": "decision",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "0ee1f81513f3547c94fa656fb10b2c2d",
+      "source_run_id": "crm-report:526b3cbe-e9b1-402b-b0be-5b5167b696d0",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "b1ea140b157324c0818ccfadf87566a5",
+      "source_run_id": "crm-report:2572fc86-0f0a-43c8-9e25-f394a8137d9f",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "759543057ab78bb43fdfce4d1a2374c2",
+      "source_run_id": "decision:714938e5-01e1-42b0-8138-96e6d1433949:domain",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "decision_engine",
+          "stage": "decision",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "af924e609c224ee8bb57c5f15e075243",
+      "source_run_id": "crm-report:f79f43c3-aec5-49d4-aff1-23b296a23540",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "id": "0c25bcc64da1d86df640dddc961dccb7",
+      "source_run_id": "crm-report:ed1a5c0a-6aba-472a-aecf-8570fe658106",
+      "service": "domain_merchant",
+      "status": "UNKNOWN",
+      "quality": "LEGACY / UNCORRELATED",
+      "stages": [
+        {
+          "engine": "mmonolith",
+          "stage": "research",
+          "status": "COMPLETED"
+        }
+      ]
+    }
+  ]
+}
