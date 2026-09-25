@@ -69,6 +69,8 @@ class ProcessStatus:
     reason: Optional[str] = None
     duration_seconds: Optional[float] = None
     lineage: list = field(default_factory=list)
+    service_id: Optional[str] = None
+    parent_run_id: Optional[str] = None
 
     def dict(self):
         return asdict(self)

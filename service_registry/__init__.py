@@ -9,7 +9,7 @@ DOMAIN = [{'stage': name, 'engine_id': engine} for name, engine in (
 DEFAULTS = {
     'domain_merchant': {'aliases': ['domain'], 'configured': True, 'stages': DOMAIN,
         'coordinator': 'dsorchestrator', 'note': 'Seven-stage orchestrator domain contract. Direct CRM runs may cover only a subset.'},
-    'scholarship_research': {'aliases': ['scholarship'], 'configured': False, 'stages': [],
+    'scholarship_research': {'aliases': ['scholarship', 'scholorship_research'], 'configured': False, 'stages': [],
         'note': 'Neither research spelling exists in the inspected engine configuration. Schopath Scout is separate; no implemented DevSpace path.'},
     'devspace_services': {'aliases': ['devspace-services'], 'configured': False, 'stages': [],
         'note': 'Orchestrator lifecycle declared but business adapters not implemented. DevSpace One outreach is a separate observed capability.'},

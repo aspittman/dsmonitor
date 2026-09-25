@@ -1,0 +1,860 @@
+--- mmonolith/services/domain_intelligence/client.py
++++ mmonolith/services/domain_intelligence/client.py
+@@ -34,7 +34,14 @@
+             raise ValueError('Mixed tenant context rejected')
+         return data
+ 
+-    def publish(self, org, bundle):
++    def publish(self, org, bundle, *, workflow_context=None):
++        if workflow_context is not None:
++            if workflow_context.get('organization_id') != org or not workflow_context.get('workflow_run_id') or not workflow_context.get('service_id'):
++                raise ValueError('Invalid workflow context')
++            from copy import deepcopy
++            bundle = deepcopy(bundle)
++            bundle['report']['metadata']['workflow_context'] = {**workflow_context, 'source_engine':'mmonolith'}
++            bundle['report']['correlation_id'] = workflow_context['correlation_id']
+         return self.request('POST', 'intelligence', org, bundle=bundle)
+ 
+     def performance(self, org):
+--- mmonolith/scripts/domain_research_fixture.py
++++ mmonolith/scripts/domain_research_fixture.py
+@@ -17,8 +17,8 @@
+       'evidence_type':'provider_estimate','keywords':[{'keyword':'hvac','search_volume':1200,'cpc':4,'competition_index':70}]}
+     buyers={'organization_id':org,'subject_key':'hvac','source_url':'https://example.test/buyers','retrieved_at':at.isoformat(),
+       'companies':[{'domain':'buyer.example','name':'Synthetic HVAC Company','fit_reason':'Synthetic HVAC contractor fixture'}]}
+-    quote={domain:{'status':'available','provider':'synthetic_test_registrar','checked_at':at.isoformat(),
+-      'acquisition_price':20,'renewal_price':20,'currency':'USD'}}
++    quote={domain:{'status':'available','provider':'GoDaddy','simulation':True,'price_type':'checkout_total','source_url':'https://example.test/synthetic-registrar','checked_at':at.isoformat(),
++      'acquisition_price':12,'renewal_price':20,'currency':'USD'}}
+     bundle=build_research(org,run_key,'hvac',['hvac'],[],sales,demand=demand,buyers=buyers,availability=quote,
+       candidates=[domain],context=context,is_test=True,legacy=True,limit=1,at=at)
+     bundle['predictions']=[{'metric':'reply_rate','expected_min':.03,'expected_max':.06,'confidence':.8,
+--- mmonolith/tests/test_domain_research.py
++++ mmonolith/tests/test_domain_research.py
+@@ -109,3 +109,20 @@
+                 with self.assertRaises(ValueError): provider.fetch(['hvacexample.com'])
+ 
+ if __name__=='__main__':unittest.main()
++
++
++def test_publish_context_is_explicit_and_does_not_mutate_bundle():
++    from services.domain_intelligence.client import LoopClient
++    from unittest.mock import patch
++    import pytest
++    org='11111111-1111-4111-8111-111111111111'
++    client=LoopClient('http://localhost','fixture')
++    bundle={'report':{'metadata':{}}}
++    context={'workflow_run_id':'run','service_id':'domain_merchant','organization_id':org,'correlation_id':'22222222-2222-4222-8222-222222222222'}
++    with patch.object(client,'request',return_value='report') as send:
++        client.publish(org,bundle,workflow_context=context)
++        sent=send.call_args.kwargs['bundle']
++        assert sent['report']['metadata']['workflow_context']['workflow_run_id']=='run'
++        assert 'workflow_context' not in bundle['report']['metadata']
++        with pytest.raises(ValueError): client.publish(org,bundle,workflow_context={**context,'organization_id':'other'})
++        assert send.call_count==1
+--- decision_engine/decision_engine/services/decision_service.py
++++ decision_engine/decision_engine/services/decision_service.py
+@@ -16,7 +16,11 @@
+         self.repository, self.config = repository, config
+         self.strategies = strategies if strategies is not None else default_strategies(config)
+ 
+-    def run(self, organization_id, trigger="MANUAL_REQUEST"):
++    def run(self, organization_id, trigger="MANUAL_REQUEST", *, workflow_context=None):
++        if workflow_context is not None:
++            if workflow_context.get('organization_id') != organization_id or not workflow_context.get('workflow_run_id') or not workflow_context.get('service_id'):
++                raise ValueError('Invalid workflow context')
++            workflow_context = {**workflow_context, 'source_engine':'decision_engine'}
+         trigger = trigger.upper()
+         if trigger not in TRIGGERS:
+             raise ValueError("Unknown decision trigger")
+@@ -77,6 +81,10 @@
+                         "signals": json.loads(json.dumps([asdict(s) for s in context.signals], default=str)),
+                         "history": json.loads(json.dumps([asdict(r) for r in context.history], default=str)),
+                         "reserved_budget": context.profile.get("reserved_budget", 0)}
++            if workflow_context:
++                snapshot['workflow_context'] = workflow_context
++                for row in rows:
++                    row['metadata']['workflow_context'] = workflow_context
+             self.repository.finish_run(run_id, organization_id, rows, snapshot, summary, bool(errors))
+             log.info("decision_completed", extra={"context": {**details, **summary}})
+             return {"run_id": run_id, "status": "PARTIAL" if errors else "COMPLETED", "recommendations": rows}
+--- devspace-crm/supabase/migrations/019_service_context.sql
++++ devspace-crm/supabase/migrations/019_service_context.sql
+@@ -0,0 +1,134 @@
++-- Additive identity contract. Existing business records and RPCs remain authoritative.
++begin;
++create table service_registry (
++ service_id text primary key, display_name text not null, enabled boolean not null default false,
++ workflow_type text unique, applicable_engines text[] not null default '{}',
++ approval_required boolean not null default true, organization_scope text not null default 'organization',
++ metadata jsonb not null default '{}'
++);
++create table service_aliases (
++ alias text primary key, service_id text not null references service_registry(service_id)
++);
++insert into service_registry(service_id,display_name,enabled,workflow_type,applicable_engines) values
++ ('domain_merchant','Domain Merchant',true,'domain',array['mmonolith','decision_engine','dsorchestrator','devspace_one']),
++ ('scholarship_research','Scholarship Research',false,null,array['mmonolith','decision_engine','dsorchestrator','devspace_one']),
++ ('devspace_services','DevSpace Services',false,'devspace-services',array['mmonolith','decision_engine','dsorchestrator','devspace_one']),
++ ('devspace_clients','DevSpace Clients',false,'crm-companies',array['mmonolith','decision_engine','dsorchestrator','devspace_one']),
++ ('investor_research','Investor Research',false,null,array['mmonolith','decision_engine','dsorchestrator','devspace_one']);
++insert into service_aliases values ('domain','domain_merchant'),('scholarship','scholarship_research'),
++ ('scholorship_research','scholarship_research'),('devspace-services','devspace_services'),
++ ('crm-companies','devspace_clients'),('crm_business','devspace_clients');
++alter table service_registry enable row level security;
++alter table service_aliases enable row level security;
++revoke all on service_registry,service_aliases from public,anon,authenticated;
++grant select on service_registry,service_aliases to authenticated;
++grant all on service_registry,service_aliases to service_role;
++create policy service_catalog_read on service_registry for select to authenticated using(true);
++create policy service_alias_read on service_aliases for select to authenticated using(true);
++create function canonical_service_id(value text) returns text language sql stable set search_path=public,pg_temp as $$
++ select coalesce((select service_id from service_registry where service_id=value),
++                 (select service_id from service_aliases where alias=value),
++                 (select service_id from service_registry where workflow_type=value))
++$$;
++
++-- Reuse dsorchestrator's exact existing tables, including installations that predate this migration.
++CREATE TABLE IF NOT EXISTS workflow_runs (
++ id TEXT PRIMARY KEY, workflow_type TEXT NOT NULL, organization_id TEXT NOT NULL,
++ cycle_key TEXT NOT NULL, status TEXT NOT NULL, current_stage TEXT,
++ correlation_id TEXT NOT NULL, created_at DOUBLE PRECISION NOT NULL,
++ updated_at DOUBLE PRECISION NOT NULL, completed_at DOUBLE PRECISION,
++ error_message TEXT, metadata TEXT NOT NULL,
++ UNIQUE(workflow_type, organization_id, cycle_key));
++CREATE TABLE IF NOT EXISTS stage_runs (
++ id TEXT PRIMARY KEY, workflow_run_id TEXT NOT NULL REFERENCES workflow_runs(id),
++ stage TEXT NOT NULL, engine TEXT NOT NULL, status TEXT NOT NULL,
++ attempt INTEGER NOT NULL DEFAULT 0, started_at DOUBLE PRECISION, completed_at DOUBLE PRECISION,
++ claim_token TEXT, claimed_by TEXT, input_reference TEXT NOT NULL DEFAULT '{}',
++ output_reference TEXT NOT NULL DEFAULT '{}', error_message TEXT, retry_safe INTEGER NOT NULL DEFAULT 0,
++ UNIQUE(workflow_run_id,stage));
++create index if not exists ds_stage_queue on stage_runs(status,engine);
++alter table workflow_runs add column service_id text references service_registry(service_id),
++ add column parent_run_id text references workflow_runs(id);
++-- A parent is backend-only coordination metadata, never a synthetic customer organization.
++alter table workflow_runs alter column organization_id drop not null;
++alter table workflow_runs add constraint workflow_parent_scope check
++ (organization_id is not null or (workflow_type='crm-companies' and coalesce(metadata::jsonb->>'scope'='parent',false)));
++create unique index workflow_parent_cycle on workflow_runs(workflow_type,cycle_key) where organization_id is null;
++create index workflow_parent_lookup on workflow_runs(parent_run_id);
++alter table workflow_runs enable row level security;
++alter table stage_runs enable row level security;
++revoke all on workflow_runs,stage_runs from public,anon,authenticated;
++grant all on workflow_runs,stage_runs to service_role;
++
++-- Enforce tenant/parent identity at the authoritative coordination store.
++create function validate_workflow_identity() returns trigger language plpgsql set search_path=public,pg_temp as $$
++declare parent workflow_runs;
++begin
++ if new.organization_id is not null and not exists(select 1 from organizations where id::text=new.organization_id) then
++   raise exception 'Unknown workflow organization'; end if;
++ if new.service_id is not null and canonical_service_id(new.workflow_type) is distinct from new.service_id then
++   raise exception 'Workflow/service mismatch'; end if;
++ if new.parent_run_id is not null then
++   select * into parent from workflow_runs where id=new.parent_run_id;
++   if not found or parent.organization_id is not null or parent.workflow_type<>'crm-companies'
++      or new.workflow_type<>'crm-companies' or new.organization_id is null then raise exception 'Invalid parent scope'; end if;
++ end if;
++ if tg_op='UPDATE' and (new.organization_id is distinct from old.organization_id
++    or new.parent_run_id is distinct from old.parent_run_id or new.service_id is distinct from old.service_id
++    or new.workflow_type is distinct from old.workflow_type) then raise exception 'Workflow ownership is immutable'; end if;
++ return new;
++end $$;
++create trigger workflow_identity before insert or update on workflow_runs for each row execute function validate_workflow_identity();
++revoke all on function validate_workflow_identity() from public,anon,authenticated;
++
++-- Explicit context lives on root evidence and recommendations. Descendants inherit through existing FKs.
++alter table intelligence_reports add column service_id text references service_registry(service_id), add column workflow_run_id text references workflow_runs(id);
++alter table recommendations add column service_id text references service_registry(service_id), add column workflow_run_id text references workflow_runs(id);
++create index report_service on intelligence_reports(service_id,organization_id);
++create index recommendation_service on recommendations(service_id,organization_id);
++create index report_workflow on intelligence_reports(organization_id,workflow_run_id);
++create index recommendation_workflow on recommendations(organization_id,workflow_run_id);
++create function validate_record_context() returns trigger language plpgsql set search_path=public,pg_temp as $$
++declare c jsonb; w workflow_runs; canonical text;
++begin
++ c:=new.metadata->'workflow_context';
++ if c is null then
++   if new.workflow_run_id is not null or new.service_id is not null then raise exception 'Explicit workflow context required'; end if;
++   return new;
++ end if; -- historical / legacy producers stay supported; no invented lineage
++ canonical:=canonical_service_id(c->>'service_id');
++ if canonical is null or nullif(c->>'workflow_run_id','') is null
++    or c->>'organization_id' is distinct from new.organization_id::text then raise exception 'Invalid workflow context'; end if;
++ select * into w from workflow_runs where id=c->>'workflow_run_id';
++ if not found or w.organization_id is distinct from new.organization_id::text
++    or coalesce(w.service_id,canonical_service_id(w.workflow_type)) is distinct from canonical
++    or w.parent_run_id is distinct from c->>'parent_run_id'
++    or w.correlation_id is distinct from c->>'correlation_id' then raise exception 'Foreign workflow context'; end if;
++ if c->>'source_engine' is distinct from (case when tg_table_name='intelligence_reports' then 'mmonolith' else 'decision_engine' end)
++    then raise exception 'Invalid primary writer'; end if;
++ new.service_id:=canonical; new.workflow_run_id:=w.id;
++ return new;
++end $$;
++create trigger report_workflow_context before insert on intelligence_reports for each row execute function validate_record_context();
++create trigger recommendation_workflow_context before insert on recommendations for each row execute function validate_record_context();
++-- New identity cannot be rewritten by a later status update.
++create function preserve_record_context() returns trigger language plpgsql as $$ begin
++ if new.service_id is distinct from old.service_id or new.workflow_run_id is distinct from old.workflow_run_id
++    or new.metadata->'workflow_context' is distinct from old.metadata->'workflow_context' then
++ raise exception 'Workflow identity is immutable'; end if; return new; end $$;
++create trigger report_identity before update on intelligence_reports for each row execute function preserve_record_context();
++create trigger recommendation_identity before update on recommendations for each row execute function preserve_record_context();
++revoke all on function validate_record_context(),preserve_record_context() from public,anon,authenticated;
++
++-- One reusable tenant-filtered projection; no copied outcome/history tables or synthetic legacy links.
++create view service_record_lineage with (security_invoker=true) as
++ select 'intelligence_report'::text record_type,r.id,r.organization_id,r.service_id,r.workflow_run_id,'mmonolith'::text source_engine,r.created_at,r.status from intelligence_reports r
++ union all select distinct 'market_signal',s.id,s.organization_id,r.service_id,r.workflow_run_id,'mmonolith',s.created_at,null from market_signals s join intelligence_report_signals l on l.signal_id=s.id and l.organization_id=s.organization_id join intelligence_reports r on r.id=l.report_id and r.organization_id=l.organization_id
++ union all select 'prediction',p.id,p.organization_id,r.service_id,r.workflow_run_id,'mmonolith',p.created_at,p.status from predictions p join intelligence_reports r on r.id=p.intelligence_report_id and r.organization_id=p.organization_id
++ union all select 'recommendation',r.id,r.organization_id,r.service_id,r.workflow_run_id,'decision_engine',r.created_at,r.status from recommendations r
++ union all select 'execution_request',q.id,q.organization_id,r.service_id,r.workflow_run_id,'crm',q.created_at,q.status from execution_requests q join recommendations r on r.id=q.recommendation_id and r.organization_id=q.organization_id
++ union all select 'execution_result',x.id,x.organization_id,r.service_id,r.workflow_run_id,'devspace_one',x.created_at,x.status from execution_results x join execution_requests q on q.id=x.execution_request_id and q.organization_id=x.organization_id join recommendations r on r.id=q.recommendation_id and r.organization_id=q.organization_id
++ union all select 'feedback_evaluation',f.id,f.organization_id,r.service_id,r.workflow_run_id,'mmonolith',f.created_at,f.evaluation from feedback_evaluations f join intelligence_reports r on r.id=f.intelligence_report_id and r.organization_id=f.organization_id;
++revoke all on service_record_lineage from public,anon,authenticated;
++grant select on service_record_lineage to authenticated,service_role;
++commit;
+--- devspace-crm/supabase/migrations/020_legacy_tenant_reads.sql
++++ devspace-crm/supabase/migrations/020_legacy_tenant_reads.sql
+@@ -0,0 +1,23 @@
++-- Close missing RLS coverage while retaining server-role ingestion and admin management.
++-- Legacy rows with unknown tenant ownership remain admin-only; do not infer/backfill owners.
++begin;
++do $$ declare t text; begin
++ foreach t in array array['organizations','organization_services','organization_members','organization_business_groups','contacts','sales_records','lead_notes','activity_log'] loop
++ execute format('alter table %I enable row level security',t);
++ execute format('revoke all on %I from anon',t);
++ execute format('grant select,insert,update,delete on %I to authenticated',t);
++ execute format('create policy architecture_admin on %I for all to authenticated using (is_admin()) with check (is_admin())',t);
++ if t='organizations' then
++ execute 'create policy architecture_tenant_read on organizations for select to authenticated using (id=my_org_id())';
++ else
++ execute format('create policy architecture_tenant_read on %I for select to authenticated using (organization_id=my_org_id())',t);
++ end if;
++ end loop;
++end $$;
++-- Existing CRM sales entry is tenant-scoped; do not grant customer contact/config writes.
++grant insert,update on sales_records to authenticated;
++create policy architecture_sales_insert on sales_records for insert to authenticated with check
++ (organization_id=my_org_id() and (lead_id is null or exists(select 1 from leads where id=lead_id and organization_id=my_org_id())));
++create policy architecture_sales_update on sales_records for update to authenticated using (organization_id=my_org_id()) with check
++ (organization_id=my_org_id() and (lead_id is null or exists(select 1 from leads where id=lead_id and organization_id=my_org_id())));
++commit;
+--- devspace-crm/contracts/services.json
++++ devspace-crm/contracts/services.json
+@@ -0,0 +1,37 @@
++{
++  "domain_merchant": {
++    "display_name": "Domain Merchant",
++    "workflow_type": "domain",
++    "aliases": [
++      "domain"
++    ]
++  },
++  "scholarship_research": {
++    "display_name": "Scholarship Research",
++    "workflow_type": null,
++    "aliases": [
++      "scholarship",
++      "scholorship_research"
++    ]
++  },
++  "devspace_services": {
++    "display_name": "DevSpace Services",
++    "workflow_type": "devspace-services",
++    "aliases": [
++      "devspace-services"
++    ]
++  },
++  "devspace_clients": {
++    "display_name": "DevSpace Clients",
++    "workflow_type": "crm-companies",
++    "aliases": [
++      "crm-companies",
++      "crm_business"
++    ]
++  },
++  "investor_research": {
++    "display_name": "Investor Research",
++    "workflow_type": null,
++    "aliases": []
++  }
++}
+--- devspace-crm/app/admin/services/page.tsx
++++ devspace-crm/app/admin/services/page.tsx
+@@ -0,0 +1,44 @@
++import Link from 'next/link'
++import { requireAdmin } from '../../../lib/auth'
++import { createSupabaseServerClient } from '../../../lib/supabase-server'
++import { uuid } from '../../../lib/decision-engine-contract'
++export const dynamic = 'force-dynamic'
++const concepts: { type: string; label: string; status?: string }[] = [
++  { type: 'market_signal', label: 'Signals' }, { type: 'intelligence_report', label: 'Research reports' },
++  { type: 'prediction', label: 'Predictions' }, { type: 'recommendation', label: 'Recommendations' },
++  { type: 'recommendation', label: 'Awaiting approval', status: 'RECOMMENDED' },
++  { type: 'execution_request', label: 'Execution requests' },
++  { type: 'execution_request', label: 'Running executions', status: 'RUNNING' },
++  { type: 'execution_result', label: 'Completed results', status: 'COMPLETED' },
++  { type: 'execution_result', label: 'Failed results', status: 'FAILED' },
++  { type: 'feedback_evaluation', label: 'Feedback evaluations' },
++]
++export default async function ServicesPage({ searchParams }: { searchParams: Promise<{ organization_id?: string }> }) {
++  await requireAdmin()
++  const params = await searchParams
++  const org = params.organization_id ? uuid.safeParse(params.organization_id) : null
++  if (org && !org.success) return <p>Invalid organization ID.</p>
++  const db = await createSupabaseServerClient()
++  const { data: services, error } = await db.from('service_registry').select('service_id,display_name,enabled').order('display_name')
++  if (error) return <p role="alert">Service catalog could not be loaded.</p>
++  const cards = await Promise.all((services ?? []).map(async service => {
++    const counts = await Promise.all(concepts.map(async concept => {
++      let query = db.from('service_record_lineage').select('id', { count: 'exact', head: true }).eq('service_id', service.service_id).eq('record_type', concept.type)
++      if (concept.status) query = query.eq('status', concept.status)
++      if (org?.success) query = query.eq('organization_id', org.data)
++      const result = await query
++      return { label: concept.label, count: result.error ? null : result.count }
++    }))
++    return { ...service, counts }
++  }))
++  return <div><h1 className="text-3xl font-bold">Services</h1>
++    <p>Research, recommendations and outcomes linked to a service. Older records without explicit service identity remain on their existing pages.</p>
++    <form className="my-4"><label>Organization ID <input className="input" name="organization_id" defaultValue={params.organization_id} /></label><button className="btn">Filter</button></form>
++    {cards.map(service => <article className="card p-5 my-4" key={service.service_id}>
++      <h2 className="text-xl font-semibold">{service.display_name}</h2>
++      <p>{service.enabled ? 'Registered · execution remains subject to approval and adapter availability' : 'Not enabled'}</p>
++      <dl>{service.counts.map(({ label, count }) => <div key={label}><dt className="inline capitalize">{label}: </dt><dd className="inline">{count ?? 'Unavailable'}</dd></div>)}</dl>
++    </article>)}
++    <Link href={org?.success ? `/admin/recommendations?organization_id=${org.data}` : '/admin/recommendations'}>Review recommendations</Link>
++  </div>
++}
+--- devspace-crm/components/layout/sidebar-nav.tsx
++++ devspace-crm/components/layout/sidebar-nav.tsx
+@@ -13,6 +13,7 @@
+   { href: '/admin', label: 'Dashboard' },
+   { href: '/admin/customers', label: 'Customers' },
+   { href: '/admin/leads', label: 'Leads' },
++  { href: '/admin/services', label: 'Services' },
+   { href: '/admin/recommendations', label: 'Recommendations' },
+   { href: '/admin/insights', label: 'Insights' },
+   { href: '/admin/bot-runs', label: 'Bot Runs' },
+--- devspace-crm/app/api/leads/route.ts
++++ devspace-crm/app/api/leads/route.ts
+@@ -1,17 +1,21 @@
+ import { NextRequest } from 'next/server'
+-import { supabaseAdmin } from '../../../lib/supabase-admin'
++import { createSupabaseServerClient } from '../../../lib/supabase-server'
++import { getCurrentProfile } from '../../../lib/auth'
+ import { json } from '../../../lib/utils'
+ 
+ // ...existing code...
+ 
+ export async function GET(req: NextRequest) {
++  const profile = await getCurrentProfile()
++  if (!profile) return json({ success: false, error: 'Unauthorized' }, { status: 401 })
++  const supabase = await createSupabaseServerClient()
+   const { searchParams } = new URL(req.url)
+   const status = searchParams.get('status')
+   const sourceBot = searchParams.get('source_bot')
+   const minScore = searchParams.get('min_score')
+   const search = searchParams.get('search')
+ 
+-  let query = supabaseAdmin
++  let query = supabase
+     .from('leads')
+     .select(`
+       *,
+--- devspace-crm/app/api/leads/[id]/route.ts
++++ devspace-crm/app/api/leads/[id]/route.ts
+@@ -1,14 +1,18 @@
+ import { NextRequest } from 'next/server'
+-import { supabaseAdmin } from '../../../../lib/supabase-admin'
++import { createSupabaseServerClient } from '../../../../lib/supabase-server'
++import { getCurrentProfile } from '../../../../lib/auth'
+ import { logActivity } from '../../../../lib/activity'
+ import { json } from '../../../../lib/utils'
+ 
+ // ...existing code...
+ 
+ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
++  const profile = await getCurrentProfile()
++  if (!profile) return json({ success: false, error: 'Unauthorized' }, { status: 401 })
++  const supabase = await createSupabaseServerClient()
+   const { id } = await params
+ 
+-  const { data, error } = await supabaseAdmin
++  const { data, error } = await supabase
+     .from('leads')
+     .select(`
+       *,
+@@ -25,10 +29,14 @@
+ }
+ 
+ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
++  const profile = await getCurrentProfile()
++  if (!profile) return json({ success: false, error: 'Unauthorized' }, { status: 401 })
++  if (profile.role !== 'admin') return json({ success: false, error: 'Forbidden' }, { status: 403 })
++  const supabase = await createSupabaseServerClient()
+   const { id } = await params
+   const body = await req.json()
+ 
+-  const { data, error } = await supabaseAdmin
++  const { data, error } = await supabase
+     .from('leads')
+     .update({
+       status: body.status,
+--- devspace-crm/app/api/leads/[id]/notes/route.ts
++++ devspace-crm/app/api/leads/[id]/notes/route.ts
+@@ -1,14 +1,18 @@
+ import { NextRequest } from 'next/server'
+-import { supabaseAdmin } from '../../../../../lib/supabase-admin'
++import { createSupabaseServerClient } from '../../../../../lib/supabase-server'
++import { getCurrentProfile } from '../../../../../lib/auth'
+ import { logActivity } from '../../../../../lib/activity'
+ import { json } from '../../../../../lib/utils'
+ 
+ // ...existing code...
+ 
+ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
++  const profile = await getCurrentProfile()
++  if (!profile) return json({ success: false, error: 'Unauthorized' }, { status: 401 })
++  const supabase = await createSupabaseServerClient()
+   const { id } = await params
+ 
+-  const { data, error } = await supabaseAdmin
++  const { data, error } = await supabase
+     .from('lead_notes')
+     .select('*')
+     .eq('lead_id', id)
+@@ -19,13 +23,20 @@
+ }
+ 
+ export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
++  const profile = await getCurrentProfile()
++  if (!profile) return json({ success: false, error: 'Unauthorized' }, { status: 401 })
++  if (profile.role !== 'admin') return json({ success: false, error: 'Forbidden' }, { status: 403 })
++  const supabase = await createSupabaseServerClient()
+   const { id } = await params
++  const { data: lead } = await supabase.from('leads').select('organization_id').eq('id', id).single()
++  if (!lead) return json({ success: false, error: 'Not found' }, { status: 404 })
+   const body = await req.json()
+ 
+-  const { data, error } = await supabaseAdmin
++  const { data, error } = await supabase
+     .from('lead_notes')
+     .insert({
+       lead_id: id,
++      organization_id: lead.organization_id,
+       body: body.body,
+     })
+     .select()
+--- devspace-crm/lib/activity.ts
++++ devspace-crm/lib/activity.ts
+@@ -5,7 +5,11 @@
+   eventType: string,
+   payload: Record<string, unknown> | null = null,
+ ) {
++  const { data: lead } = leadId
++    ? await supabaseAdmin.from('leads').select('organization_id').eq('id', leadId).single()
++    : { data: null }
+   await supabaseAdmin.from('activity_log').insert({
++    organization_id: lead?.organization_id ?? null,
+     lead_id: leadId,
+     event_type: eventType,
+     payload,
+--- devspace-crm/tests/test_decision_database.py
++++ devspace-crm/tests/test_decision_database.py
+@@ -36,11 +36,11 @@
+     db.execute('insert into auth.users values(%s),(%s)',(admin,customer))
+     db.execute("insert into profiles(id,email,role,organization_id) values(%s,'admin@example.test','admin',%s),(%s,'customer@example.test','customer',%s)",(admin,org,customer,other))
+     db.execute("insert into organization_services(organization_id,service_key,service_name) values(%s,'domain_merchant','Domain research')",(org,))
+-    constraints = {'monthly_marketing_budget':1000,'minimum_confidence':0.65}
++    constraints = {'monthly_marketing_budget':1000,'minimum_confidence':0.65,'max_domain_acquisition_price':100,'domain_registrar':'GoDaddy'}
+     db.execute('insert into decision_constraints(organization_id,constraints) values(%s,%s)',(org,Jsonb(constraints)))
+     db.execute("insert into market_signals(id,organization_id,subject_type,signal_type,metric,value_numeric,unit,confidence_score,source,observed_at) values(%s,%s,'organization','opportunity','buyer_density',95,'score_0_100',.95,'local_fixture',now())",(signal,org))
+     run = str(db.execute("select de_start_run(%s,'MANUAL_REQUEST')",(org,)).fetchone()[0])
+-    parameters = {'budget_limit':100,'currency':'USD','locations':[],'industries':[],'brand_restrictions':[]}
++    parameters = {'registrar':'GoDaddy','budget_limit':100,'currency':'USD','locations':[],'industries':[],'brand_restrictions':[]}
+     row = {'id':rec,'organization_id':org,'recommendation_type':'DOMAIN_ACQUISITION','execution_service':'domain_merchant',
+       'title':'Development domain research','summary':'Local fixture','reason':'Evidence supports research only','priority':'HIGH','score':85,
+       'confidence_score':.95,'expected_cost':100,'suggested_budget':100,'currency':'USD','risk_level':'LOW','status':'RECOMMENDED',
+@@ -131,3 +131,60 @@
+     db.execute("update recommendations set expires_at=now()-interval '1 second' where id=%s",(rec,))
+     db.execute("select de_start_run(%s,'MANUAL_REQUEST')",(org,))
+     assert db.execute('select status from execution_requests where recommendation_id=%s',(rec,)).fetchone()[0]=='CANCELLED'
++
++
++def test_service_registry_aliases_and_snapshot(database):
++    import json
++    catalog=json.loads((ROOT/'contracts/services.json').read_text())
++    for service,item in catalog.items():
++        assert database.execute('select canonical_service_id(%s)',(service,)).fetchone()[0]==service
++        for alias in item['aliases']:
++            assert database.execute('select canonical_service_id(%s)',(alias,)).fetchone()[0]==service
++    assert database.execute("select canonical_service_id('subscriptions')").fetchone()[0] is None
++    database.execute("update service_registry set workflow_type='investor-review' where service_id='investor_research'")
++    try:
++        assert database.execute("select canonical_service_id('investor-review')").fetchone()[0]=='investor_research'
++    finally: database.execute("update service_registry set workflow_type=null where service_id='investor_research'")
++
++
++def test_explicit_context_and_cross_tenant_rejection(recommendation):
++    db,org,other,*_=recommendation
++    workflow,correlation=uid(),uid()
++    db.execute("insert into workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id) values(%s,'domain',%s,'fixture','RUNNING',%s,1,1,'{}','domain_merchant')",(workflow,org,correlation))
++    context={'workflow_run_id':workflow,'service_id':'domain','organization_id':org,'correlation_id':correlation,'parent_run_id':None,'source_engine':'mmonolith'}
++    def publish(ctx,tenant=org):
++        return db.execute("insert into intelligence_reports(organization_id,subject_type,report_type,summary,confidence_score,status,metadata) values(%s,'organization','fixture','test',.9,'CURRENT',%s) returning id",(tenant,Jsonb({'workflow_context':ctx}))).fetchone()[0]
++    rid=publish(context)
++    assert db.execute('select service_id,workflow_run_id from intelligence_reports where id=%s',(rid,)).fetchone()==('domain_merchant',workflow)
++    assert db.execute("select workflow_run_id from service_record_lineage where id=%s and record_type='intelligence_report'",(rid,)).fetchone()[0]==workflow
++    for patch in ({'organization_id':other},{'service_id':'devspace_services'},{'source_engine':'decision_engine'},{'correlation_id':uid()},{'parent_run_id':uid()}):
++        with pytest.raises(psycopg.Error): publish({**context,**patch})
++    with pytest.raises(psycopg.Error): publish({**context,'organization_id':other},other)
++
++
++def test_legacy_tenant_rls(recommendation):
++    db,org,other,admin,customer,*_=recommendation
++    contact=uid()
++    db.execute("insert into contacts(id,organization_id,name) values(%s,%s,'private')",(contact,org))
++    db.execute("select set_config('request.jwt.claim.sub',%s,false)",(customer,))
++    db.execute('set role authenticated')
++    try:
++        assert db.execute('select count(*) from contacts where id=%s',(contact,)).fetchone()[0]==0
++        assert db.execute('select count(*) from organizations where id=%s',(org,)).fetchone()[0]==0
++        assert db.execute('select count(*) from service_record_lineage where organization_id=%s',(org,)).fetchone()[0]==0
++    finally: db.execute('reset role')
++
++
++def test_parent_scope_is_backend_only(recommendation):
++    db,org,other,_,customer,*_=recommendation
++    parent=uid()
++    db.execute("insert into workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id) values(%s,'crm-companies',null,%s,'WAITING',%s,1,1,'{\"scope\":\"parent\"}','devspace_clients')",(parent,parent,uid()))
++    for tenant in (org,other):
++        db.execute("insert into workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id,parent_run_id) values(%s,'crm-companies',%s,%s,'PENDING',%s,1,1,'{}','devspace_clients',%s)",(uid(),tenant,parent,uid(),parent))
++    with pytest.raises(psycopg.Error):
++        db.execute("insert into workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id,parent_run_id) values(%s,'domain',%s,%s,'PENDING',%s,1,1,'{}','domain_merchant',%s)",(uid(),org,parent,uid(),parent))
++    db.execute("select set_config('request.jwt.claim.sub',%s,false)",(customer,))
++    db.execute('set role authenticated')
++    try:
++        with pytest.raises(psycopg.errors.InsufficientPrivilege): db.execute('select * from workflow_runs')
++    finally: db.execute('reset role')
+--- devspace-crm/tests/lead-auth.test.cjs
++++ devspace-crm/tests/lead-auth.test.cjs
+@@ -0,0 +1,22 @@
++const { test } = require('node:test')
++const assert = require('node:assert/strict')
++const ts = require('typescript')
++const fs = require('node:fs')
++require.extensions['.ts'] = (module, name) => module._compile(ts.transpileModule(fs.readFileSync(name, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true } }).outputText, name)
++let profile = null
++require.cache[require.resolve('../lib/auth.ts')] = { exports: { getCurrentProfile: async () => profile } }
++require.cache[require.resolve('../lib/supabase-server.ts')] = { exports: { createSupabaseServerClient: async () => { throw Error('Unauthorized database access') } } }
++require.cache[require.resolve('../lib/activity.ts')] = { exports: { logActivity: async () => { throw Error('Unauthorized write') } } }
++const list = require('../app/api/leads/route.ts')
++const detail = require('../app/api/leads/[id]/route.ts')
++const notes = require('../app/api/leads/[id]/notes/route.ts')
++const params = { params: Promise.resolve({ id: '11111111-1111-4111-8111-111111111111' }) }
++test('legacy lead routes reject anonymous requests before any database access', async () => {
++  for (const handle of [list.GET, detail.GET, detail.PATCH, notes.GET, notes.POST]) {
++    assert.equal((await handle({}, params)).status, 401)
++  }
++})
++test('legacy lead mutations require an admin session', async () => {
++  profile = { role: 'customer', organization_id: 'tenant' }
++  for (const handle of [detail.PATCH, notes.POST]) assert.equal((await handle({}, params)).status, 403)
++})
+--- dsorchestrator/core/service_identity.py
++++ dsorchestrator/core/service_identity.py
+@@ -0,0 +1,9 @@
++"""Local catalog snapshot; shared deployments resolve from CRM's service_registry."""
++import json
++import os
++from pathlib import Path
++
++def service_for(workflow):
++    path = Path(os.environ.get('DEVSPACE_SERVICE_CATALOG', Path(__file__).resolve().parents[2] / 'devspace-crm/contracts/services.json'))
++    catalog = json.loads(path.read_text())
++    return next((key for key, item in catalog.items() if workflow == key or workflow == item.get('workflow_type') or workflow in item.get('aliases', [])), None)
+--- dsorchestrator/core/state.py
++++ dsorchestrator/core/state.py
+@@ -13,7 +13,7 @@
+ 
+ SCHEMA = '''
+ CREATE TABLE IF NOT EXISTS workflow_runs (
+- id TEXT PRIMARY KEY, workflow_type TEXT NOT NULL, organization_id TEXT NOT NULL,
++ id TEXT PRIMARY KEY, workflow_type TEXT NOT NULL, organization_id TEXT,
+  cycle_key TEXT NOT NULL, status TEXT NOT NULL, current_stage TEXT,
+  correlation_id TEXT NOT NULL, created_at DOUBLE PRECISION NOT NULL,
+  updated_at DOUBLE PRECISION NOT NULL, completed_at DOUBLE PRECISION,
+@@ -50,6 +50,11 @@
+             self.db.execute('PRAGMA foreign_keys=ON')
+             self.db.execute('PRAGMA journal_mode=WAL')
+             self.db.executescript(SCHEMA)
++            columns = {r['name'] for r in self.db.execute('PRAGMA table_info(workflow_runs)')}
++            for name in ('service_id', 'parent_run_id'):
++                if name not in columns:
++                    self.db.execute('ALTER TABLE workflow_runs ADD COLUMN ' + name + ' TEXT')
++            self.db.execute('CREATE UNIQUE INDEX IF NOT EXISTS workflow_parent_cycle ON workflow_runs(workflow_type,cycle_key) WHERE organization_id IS NULL')
+ 
+     def close(self):
+         self.db.close()
+@@ -81,17 +86,42 @@
+     def stages(self, run_id):
+         return {s['stage']: s for s in self.rows('SELECT * FROM stage_runs WHERE workflow_run_id=?', (run_id,))}
+ 
++    def service_id(self, workflow):
++        if self.postgres:
++            return self.execute('SELECT canonical_service_id(?)', (workflow,)).fetchone()['canonical_service_id']
++        from core.service_identity import service_for
++        return service_for(workflow)
++
++    def ensure_parent(self, cycle):
++        # PostgreSQL shared mode supports cross-tenant fanout. Old SQLite files may
++        # retain NOT NULL organization_id; do not rebuild those files automatically.
++        if not self.postgres and any(r['name']=='organization_id' and r['notnull'] for r in self.db.execute('PRAGMA table_info(workflow_runs)')):
++            raise ValueError('Parent fanout requires shared PostgreSQL or a new local development database')
++        with self.transaction():
++            now = time.time()
++            self.execute("INSERT INTO workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id) VALUES(?,'crm-companies',NULL,?,'WAITING',?,?,?,?,'devspace_clients') ON CONFLICT DO NOTHING",
++                (str(uuid4()), cycle, str(uuid4()), now, now, json.dumps({'scope':'parent'})))
++            return self.rows("SELECT * FROM workflow_runs WHERE workflow_type='crm-companies' AND organization_id IS NULL AND cycle_key=?", (cycle,))[0]
++
+     def ensure(self, workflow, organization, cycle='default', metadata=None):
+         from uuid import UUID
+         organization = str(UUID(organization))
++        parent_id = (metadata or {}).get('parent_run_id')
++        service = self.service_id(workflow.name)
++        if parent_id:
++            parent = self.get(parent_id)
++            if parent['organization_id'] is not None or parent['workflow_type'] != 'crm-companies' or service != 'devspace_clients':
++                raise ValueError('Invalid parent scope')
+         with self.transaction():
+             run_id = str(uuid4())
+             now = time.time()
+             # MMonolith's existing UUID correlation convention.
+             correlation = str(uuid5(NAMESPACE_URL, organization + ':' + run_id + ':research'))
+-            self.execute('INSERT INTO workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(workflow_type,organization_id,cycle_key) DO NOTHING',
+-                (run_id, workflow.name, organization, cycle, 'PENDING', correlation, now, now, json.dumps(metadata or {})))
++            self.execute('INSERT INTO workflow_runs(id,workflow_type,organization_id,cycle_key,status,correlation_id,created_at,updated_at,metadata,service_id,parent_run_id) VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(workflow_type,organization_id,cycle_key) DO NOTHING',
++                (run_id, workflow.name, organization, cycle, 'PENDING', correlation, now, now, json.dumps(metadata or {}), service, parent_id))
+             row = self.rows('SELECT * FROM workflow_runs WHERE workflow_type=? AND organization_id=? AND cycle_key=?', (workflow.name, organization, cycle))[0]
++            if row.get('parent_run_id') != parent_id:
++                raise ValueError('Existing cycle belongs to a different parent')
+             for stage in workflow.stages:
+                 self.execute('INSERT INTO stage_runs(id,workflow_run_id,stage,engine,status) VALUES(?,?,?,?,?) ON CONFLICT(workflow_run_id,stage) DO NOTHING',
+                     (str(uuid4()), row['id'], stage.name, stage.engine, 'PENDING'))
+--- dsorchestrator/core/orchestrator.py
++++ dsorchestrator/core/orchestrator.py
+@@ -44,6 +44,7 @@
+             outputs = {name:json.loads(s['output_reference']) for name,s in rows.items() if s['status'] == 'COMPLETED'}
+             payload = {'workflow_run_id':run_id, 'stage_id':row['id'], 'idempotency_key':row['id'],
+                 'correlation_id':run['correlation_id'], 'workflow':workflow.name,
++                'service_id':run.get('service_id') or self.state.service_id(workflow.name), 'parent_run_id':run.get('parent_run_id'),
+                 'organization_id':run['organization_id'], 'stage':stage.name, 'engine':stage.engine,
+                 'run_key':run_id + ':' + stage.name, 'inputs':outputs, 'metadata':json.loads(run['metadata'])}
+             if stage.name == 'approval' and outputs.get('decision', {}).get('no_action'):
+--- dsorchestrator/core/pending.py
++++ dsorchestrator/core/pending.py
+@@ -32,7 +32,11 @@
+     report = candidate['report']
+     request = candidate.get('request')
+     existing_run = None
+-    for run in state.runs('domain'):
++    if report.get('workflow_run_id'):
++        existing_run = state.get(report['workflow_run_id'])
++        if existing_run['organization_id'] != organization or existing_run['workflow_type'] != 'domain' or existing_run['correlation_id'] != report.get('correlation_id'):
++            raise ValueError('Foreign persisted workflow identity')
++    for run in ([] if existing_run else state.runs('domain')):
+         if run['organization_id'] != organization: continue
+         stages = state.stages(run['id'])
+         previous = json.loads(stages['research']['output_reference'])
+--- dsorchestrator/engines/bridge.py
++++ dsorchestrator/engines/bridge.py
+@@ -44,6 +44,7 @@
+     outbox.mkdir(parents=True, exist_ok=True)
+     receipt = outbox / 'receipt.json'
+     if receipt.exists(): return json.loads(receipt.read_text())
++    workflow_context = {key: job.get(key) for key in ('workflow_run_id','service_id','organization_id','parent_run_id','correlation_id')}
+     output = {}
+     if stage in ('research','updated_intelligence'):
+         from services.domain_intelligence.client import LoopClient
+@@ -65,6 +66,8 @@
+                 if any(k in params for k in ('org','run_key','context','is_test')): raise ValueError('Reserved research input')
+                 bundle = build_research(org, job['run_key'], context=context, is_test=test, **params)
+             bundle['report']['correlation_id'] = job['correlation_id']
++            if workflow_context['service_id']:
++                bundle['report']['metadata']['workflow_context'] = {**workflow_context, 'source_engine':'mmonolith'}
+             save(bundle_file, bundle)
+         rid = client.publish(org, bundle)
+         output = {'intelligence_report_id':rid, 'correlation_id':job['correlation_id']}
+@@ -87,7 +90,7 @@
+                 return context
+         config = scoring_config()
+         client = CRMClient(os.environ['CRM_BASE_URL'], os.environ['CRM_API_SECRET'])
+-        result = DecisionService(ScopedRepository(client,config), config, [DomainAcquisitionStrategy(config)]).run(org, 'NEW_INTELLIGENCE_REPORT')
++        result = DecisionService(ScopedRepository(client,config), config, [DomainAcquisitionStrategy(config)]).run(org, 'NEW_INTELLIGENCE_REPORT', workflow_context=workflow_context if workflow_context['service_id'] else None)
+         if result['status'] != 'COMPLETED': raise ValueError('Partial engine result')
+         recs = [r['id'] for r in result['recommendations'] if r['recommendation_type'] == 'DOMAIN_ACQUISITION']
+         output = {'decision_run_id':result['run_id'], 'recommendation_ids':recs, 'no_action':not recs}
+--- dsorchestrator/main.py
++++ dsorchestrator/main.py
+@@ -40,6 +40,7 @@
+     run.add_argument('--organization', type=lambda s:str(UUID(s)))
+     run.add_argument('--cycle', default='default', help='Stable cycle key. Use a new value only for an intentional new cycle.')
+     run.add_argument('--dry-run', action='store_true')
++    run.add_argument('--parent-cycle', help='Create/reuse a backend-only parent for crm-companies fanout')
+     for name in ('retry','resume','reconcile'):
+         command = sub.add_parser(name); command.add_argument('run_id'); command.add_argument('--stage')
+     for name in ('pending','failures','health','scheduled'):
+@@ -98,6 +99,9 @@
+             else:
+                 if not organization: raise ValueError('Set ORCHESTRATOR_ORGANIZATION_ID or --organization UUID')
+                 organizations = [organization]
++            if args.parent_cycle and args.workflow != 'crm-companies':
++                raise ValueError('--parent-cycle requires crm-companies')
++            parent = state.ensure_parent(args.parent_cycle) if args.parent_cycle else None
+             failed = False
+             for organization in organizations:
+                 try:
+@@ -108,7 +112,11 @@
+                         if not results: print('No pending domain records for this organization and mode.')
+                         failed |= any(r['status'] == 'FAILED' for r in results)
+                         continue
+-                    result = orchestrator.run(args.workflow,organization,args.cycle,args.stage)
++                    if parent:
++                        result = orchestrator.run(args.workflow,organization,'parent:'+parent['id']+':'+args.cycle,args.stage,
++                            {'is_test':settings.test_mode,'parent_run_id':parent['id']})
++                    else:
++                        result = orchestrator.run(args.workflow,organization,args.cycle,args.stage)
+                     display_run(result,state)
+                     failed |= result['status'] in ('FAILED','PARTIAL')
+                 except Exception:
+--- dsorchestrator/tests/test_control_plane.py
++++ dsorchestrator/tests/test_control_plane.py
+@@ -311,3 +311,47 @@
+     s.execute("UPDATE stage_runs SET status='UNAVAILABLE' WHERE id=?",(row['id'],))
+     s.enqueue(row['id'],{'run_key':'changed'})
+     assert json.loads(s.stages(run['id'])['research']['input_reference'])=={'run_key':'original'}
++
++
++def test_service_identity_and_parent_children(setup):
++    o,s,r,c = setup
++    parent = s.ensure_parent('tenant-batch')
++    assert s.ensure_parent('tenant-batch')['id'] == parent['id']
++    children = [o.run('crm-companies', org, cycle='child', metadata={'parent_run_id':parent['id']}) for org in (ORG,OTHER)]
++    assert parent['organization_id'] is None
++    assert {row['service_id'] for row in children} == {'devspace_clients'}
++    assert {row['parent_run_id'] for row in children} == {parent['id']}
++    assert children[0]['id'] != children[1]['id']
++    for child in children:
++        payload=json.loads(s.stages(child['id'])['research']['input_reference'])
++        assert payload['workflow_run_id']==child['id']
++        assert payload['organization_id']==child['organization_id']
++        assert payload['parent_run_id']==parent['id']
++        assert payload['service_id']=='devspace_clients'
++    with pytest.raises(ValueError,match='parent'):
++        s.ensure(WORKFLOWS['domain'],ORG,'invalid',{'parent_run_id':children[0]['id']})
++
++
++def test_second_service_contract_preserves_context(setup):
++    o,s,r,c=setup
++    c.approved=True
++    run=o.run('devspace-services',ORG,cycle='contract-fixture')
++    assert run['status']=='COMPLETED'
++    assert run['service_id']=='devspace_services'
++    for stage in s.stages(run['id']).values():
++        payload=json.loads(stage['input_reference'])
++        assert payload['workflow_run_id']==run['id']
++        assert payload['service_id']=='devspace_services'
++        assert payload['organization_id']==ORG
++    assert len(r.calls)==6
++    # This validates routing with fixtures, not nonexistent service business adapters.
++
++
++def test_adoption_reuses_published_workflow_identity(setup):
++    from core.pending import adopt
++    o,s,r,c=setup
++    run=s.ensure(WORKFLOWS['domain'],ORG,cycle='published-before-crash',metadata={'is_test':True})
++    report={'id':str(uuid4()),'organization_id':ORG,'is_test':True,'workflow_run_id':run['id'],'correlation_id':run['correlation_id']}
++    resumed=adopt(s,ORG,{'report':report})
++    assert resumed['id']==run['id'] and len(s.runs())==1
++    with pytest.raises(ValueError): adopt(s,OTHER,{'report':report})
+--- dsorchestrator/scripts/safe_integration.py
++++ dsorchestrator/scripts/safe_integration.py
+@@ -63,6 +63,7 @@
+     args.add_argument('--mmonolith-root',required=True)
+     args.add_argument('--crm-root',required=True)
+     args.add_argument('--devspace-one-root',required=True)
++    args.add_argument('--monitor-root',help='Optional read-only trace validation; monitor is never an operational dependency')
+     args=args.parse_args()
+     global MM_ROOT, ROOT
+     MM_ROOT=Path(args.mmonolith_root).resolve()
+@@ -96,7 +97,7 @@
+                 db.execute('insert into auth.users values(%s)',(ADMIN,))
+                 db.execute("insert into profiles(id,email,role,organization_id) values(%s,'aaron@devspacetechnologies.com','admin',%s)",(ADMIN,ORG))
+                 db.execute("insert into organization_services(organization_id,service_key,service_name) values(%s,'domain_merchant','Development domain research')",(ORG,))
+-                db.execute('insert into decision_constraints(organization_id,constraints) values(%s,%s)',(ORG,Jsonb({'monthly_marketing_budget':1500,'email_reputation_healthy':True,'risk_tolerance':'MEDIUM'})))
++                db.execute('insert into decision_constraints(organization_id,constraints) values(%s,%s)',(ORG,Jsonb({'monthly_marketing_budget':1500,'max_domain_acquisition_price':1000,'domain_registrar':'GoDaddy','email_reputation_healthy':True,'risk_tolerance':'MEDIUM'})))
+                 rest_port,proxy_port,crm_port=port(),port(),port()
+                 rest_url=f'http://127.0.0.1:{rest_port}'
+                 crm_url=f'http://127.0.0.1:{crm_port}'
+@@ -170,6 +171,8 @@
+                 assert rec['title'] in html and 'Decision Engine Development' in html and 'View Evidence' in html, 'Recommendation absent from CRM UI'
+                 with urlopen(Request(crm_url+'/admin/domain-portfolio?tab=recommendations',headers={'Cookie':cookie}),timeout=90) as response: portfolio=response.read().decode()
+                 assert 'Researched by MMonolith' in portfolio and 'hvacserviceexample.com' in portfolio, 'Research missing from existing portfolio UI'
++                with urlopen(Request(crm_url+'/admin/services?organization_id='+ORG,headers={'Cookie':cookie}),timeout=90) as response: services_page=response.read().decode()
++                assert 'Domain Merchant' in services_page and 'Investor Research' in services_page and 'could not be loaded' not in services_page
+                 parser=Forms();parser.feed(html)
+                 form=next(f for f in parser.forms if f.get('recommendation_id')==rec['id'])
+                 assert any(k.startswith('$ACTION') for k in form), 'Missing server action binding'
+@@ -188,6 +191,10 @@
+                 assert completed['status']=='COMPLETED', (completed,state.stages(cycle['id']))
+                 stages=state.stages(cycle['id'])
+                 outcome=db.execute('select row_to_json(x) from execution_results x where execution_request_id=%s',(request[0],)).fetchone()[0]
++                assert outcome['results']['workflow_context']['workflow_run_id']==cycle['id']
++                assert outcome['results']['workflow_context']['service_id']=='domain_merchant'
++                lineage=db.execute('select distinct workflow_run_id,service_id from service_record_lineage where organization_id=%s',(ORG,)).fetchall()
++                assert lineage==[(cycle['id'],'domain_merchant')], lineage
+                 assert outcome['results']['is_test'] and outcome['metrics']['replies']==31
+                 feedback=json.loads(stages['feedback']['output_reference'])['feedback_evaluation_ids']
+                 updated=json.loads(stages['updated_intelligence']['output_reference'])['intelligence_report_id']
+@@ -224,6 +231,10 @@
+                     'updated_intelligence_report_id':updated,'next_decision':next_output,
+                     'crm_ui_verified':True,'approval_via_crm_form':True,'external_actions':0,
+                     'all_stages':{name:row['status'] for name,row in stages.items()}}
++                if args.monitor_root:
++                    check_env={**os.environ,'ARCHITECTURE_TEST_DSN':server.get_uri(),'ARCHITECTURE_TEST_ORG':ORG,'ARCHITECTURE_TEST_RUN':cycle['id']}
++                    subprocess.run([sys.executable,str(Path(args.monitor_root).resolve()/'scripts/verify_architecture_trace.py')],env=check_env,check=True)
++                    trace['monitor_verified']=True
+                 print(json.dumps(trace,indent=2))
+                 (DS_ROOT/'data').mkdir(exist_ok=True)
+                 (DS_ROOT/'data/safe_integration_trace.json').write_text(json.dumps(trace,indent=2))
+--- devspace-one/core/feedback_worker.py
++++ devspace-one/core/feedback_worker.py
+@@ -38,7 +38,9 @@
+             'cost':0,'revenue':None,'metrics':metrics,'results':{'is_test':True,'simulation':True,
+              'observed_metrics':{'domains_received':len(rows)},'simulated_metrics':simulated,
+              'summary':'Approved MMonolith findings received; no purchase, email, research or paid provider.',
+-             'correlation_id':params.get('correlation_id')}}
++             'correlation_id':params.get('correlation_id'),
++             **({'workflow_context': {**report['metadata']['workflow_context'], 'source_engine':'devspace_one'}}
++                if report.get('metadata',{}).get('workflow_context') else {})}}
+ 
+ 
+ def main():
+--- devspace-one/tests/test_feedback_worker.py
++++ devspace-one/tests/test_feedback_worker.py
+@@ -43,3 +43,12 @@
+             with self.assertRaises(ValueError): execute(request,{})
+ 
+ if __name__=='__main__': unittest.main()
++
++
++def test_execution_retains_explicit_workflow_context():
++    request=FeedbackWorkerTests().request()
++    request['_research_report']['metadata']['workflow_context']={'workflow_run_id':'shared-run','service_id':'domain_merchant','organization_id':'test-org','source_engine':'mmonolith'}
++    with patch.dict(os.environ,{'DEVSPACE_ENV':'test'}):
++        result=execute(request,{})
++    assert result['results']['workflow_context']['workflow_run_id']=='shared-run'
++    assert result['results']['workflow_context']['source_engine']=='devspace_one'

@@ -5,6 +5,7 @@ import hashlib
 import json
 from adapters.base import epoch, timestamp
 from service_registry import ENGINES, identify, registry
+from services.evidence_service import provenance
 
 STATUSES = {'NOT_STARTED', 'RUNNING', 'COMPLETED', 'WAITING', 'WAITING_FOR_APPROVAL',
             'STALLED', 'FAILED', 'SKIPPED', 'CANCELLED', 'UNKNOWN'}
@@ -26,7 +27,7 @@ def normalize(processes, config):
     definitions = registry(config)
     runs, events = [], []
     for p in processes:
-        service = identify(p['process_type'], definitions)
+        service = identify(p.get('service_id') or p['process_type'], definitions)
         # Orchestrator ID is authoritative. A CRM recommendation is an explicitly
         # linked fragment, never an invented end-to-end workflow ID.
         reliable = p.get('source') == 'dsorchestrator'
@@ -137,7 +138,7 @@ def project(run, events, config, now=None):
         execution=[s['duration_seconds'] for s in stages if s['engine_id']==engine and s['stage']!='approval' and s['duration_seconds'] is not None and s['status'] not in ('WAITING','WAITING_FOR_APPROVAL')]
         approval=[s['duration_seconds'] for s in stages if s['engine_id']==engine and s['stage']=='approval' and s['duration_seconds'] is not None]
         engine_timings.append({'engine_id':engine,'observed_execution_seconds':sum(execution) if execution else None,'observed_approval_seconds':sum(approval) if approval else None})
-    return {**run, 'engine_timings':engine_timings, 'status':result_status, 'stages':stages, 'events':sorted(events,key=lambda e:epoch(e.get('timestamp')) or 0),
+    return {**run, 'evidence_source':provenance(run), 'engine_timings':engine_timings, 'status':result_status, 'stages':stages, 'events':sorted(events,key=lambda e:epoch(e.get('timestamp')) or 0),
             'root_failure':root, 'cut_off_at':root['engine_id'] if root else None,
             'last_successful_stage':successes[-1] if successes else None,
             'downstream_not_reached':[{'engine_id':s['engine_id'],'stage':s['stage']} for s in downstream],

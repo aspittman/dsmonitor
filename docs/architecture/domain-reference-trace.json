@@ -1,0 +1,31 @@
+{
+  "workflow_run_id": "48e74d65-9f08-4ec3-9851-8677833c8be8",
+  "organization_id": "11111111-1111-4111-8111-111111111111",
+  "correlation_id": "44a28682-e25b-5e15-b810-38c1622baf69",
+  "intelligence_report_id": "4f5cbadb-e7cd-4ca9-b388-a87431288c58",
+  "recommendation_id": "8a75932f-6b89-4a7e-a8a1-e10620062556",
+  "execution_request_id": "e32e6427-42ea-44b9-b470-d93e5b3a5b8d",
+  "execution_result_id": "f75efc52-8d20-47c5-94a6-6df23d357ee1",
+  "feedback_evaluation_id": "d90f414b-2e77-4411-af4b-ee43e12c3927",
+  "updated_intelligence_report_id": "a76303db-5caf-4570-8028-c3523f35d601",
+  "next_decision": {
+    "decision_run_id": "e0e4df2d-8190-438b-b689-a051f7aa3637",
+    "recommendation_ids": [
+      "a6a08580-621c-4fca-99f2-e0dd9db07a0f"
+    ],
+    "no_action": false
+  },
+  "crm_ui_verified": true,
+  "approval_via_crm_form": true,
+  "external_actions": 0,
+  "all_stages": {
+    "approval": "COMPLETED",
+    "decision": "COMPLETED",
+    "execution": "COMPLETED",
+    "feedback": "COMPLETED",
+    "redecision": "COMPLETED",
+    "research": "COMPLETED",
+    "updated_intelligence": "COMPLETED"
+  },
+  "monitor_verified": true
+}

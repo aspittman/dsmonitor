@@ -31,7 +31,10 @@ def collect(config):
         # Local owner state is available without remote CRM scope. Remote state requires a scope.
         if pg and not allowed: raise ValueError('Configure organization_ids before reading remote workflow state')
         total = db.execute('SELECT count(*) AS n FROM workflow_runs' + where, allowed).fetchone()['n']
-        runs = [dict(r) for r in db.execute('SELECT id,workflow_type,organization_id,status,current_stage,correlation_id,created_at,updated_at,completed_at,error_message FROM workflow_runs' + where + ' ORDER BY updated_at DESC LIMIT ' + marker, [*allowed, config['limit']])]
+        # Inspect optional additive columns; older deployments remain readable.
+        columns = {r['column_name'] for r in db.execute("SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='workflow_runs'")} if pg else {r['name'] for r in db.execute('PRAGMA table_info(workflow_runs)')}
+        extra = ''.join(',' + name for name in ('service_id', 'parent_run_id') if name in columns)
+        runs = [dict(r) for r in db.execute('SELECT id,workflow_type,organization_id,status,current_stage,correlation_id,created_at,updated_at,completed_at,error_message' + extra + ' FROM workflow_runs' + where + ' ORDER BY updated_at DESC LIMIT ' + marker, [*allowed, config['limit']])]
         ids = [r['id'] for r in runs]
         stages = []
         if ids:
@@ -46,6 +49,8 @@ def collect(config):
                           started_at=timestamp(r['created_at']), last_activity=timestamp(r['updated_at']),
                           completed_at=timestamp(r['completed_at']), last_error=r['error_message'], correlation_id=r['correlation_id'])
         p.source_status = r['status']
+        p.service_id = r.get('service_id')
+        p.parent_run_id = r.get('parent_run_id')
         p.reason = 'Actual workflow_runs.status; stages from stage_runs. Completion is the orchestrator assertion.'
         if r['completed_at'] and r['created_at']: p.duration_seconds = round(float(r['completed_at']) - float(r['created_at']), 2)
         for s in grouped[r['id']]:

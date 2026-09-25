@@ -13,6 +13,7 @@ from services.snapshot_service import SnapshotStore
 from services.workflow_trace_service import enrich
 from services.process_service import crm_processes, crm_activity
 from services.trace_service import normalize, project, overview
+from services.evidence_service import provenance, shared_state
 
 
 class Monitor:
@@ -92,6 +93,13 @@ class Monitor:
               'activity':sorted(activity,key=lambda x:x['timestamp'] or '',reverse=True)[:200],
               'errors':sorted(errors,key=lambda x:x['timestamp'] or '',reverse=True)[:200],
               'summary':summary,'coverage':coverage,'organizations':orgs,'registry':list(REGISTRY.values()),'monitor_errors':normalization_errors}
+        for process in processes:
+            process['evidence_source']=provenance(process)
+        try:
+            data['shared_state']=shared_state(contexts,self.config,processes)
+        except Exception:
+            data['shared_state']={}
+            data['monitor_errors'].append('CRM evidence summary unavailable; other observations remain available')
         data=self.sanitizer.clean(data)
         try:
             runs, trace_events = [], []

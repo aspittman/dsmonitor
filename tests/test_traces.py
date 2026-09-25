@@ -200,3 +200,10 @@ def test_decision_log_attribution_preserves_unknown_time(tmp_path):
     assert r['workflow_run_id'] is None and r['stages'][0]['status']=='COMPLETED'
     cell=next(c for c in overview([r],{},now=NOW)['matrix'] if c['service_id']=='domain_merchant' and c['engine_id']=='decision_engine')
     assert cell['status']=='UNKNOWN' and cell['failures_today']==0
+
+
+def test_canonical_service_and_parent_context():
+    r=trace(process([stage('research','mmonolith')],process_type='legacy-unknown',service_id='scholorship_research',parent_run_id='parent'))
+    assert r['service_id']=='scholarship_research'
+    assert r['parent_run_id']=='parent'
+    assert r['workflow_run_id']=='run-1'

@@ -1,0 +1,152 @@
+[
+  {
+    "repository": "mmonolith",
+    "file": "services/domain_intelligence/client.py",
+    "original_sha256": "6ca64e7251ea84e9a2240f43e42cbbcbaff1d79340fa7f88cdc4957c39a1306a",
+    "new_sha256": "350de25cef62676a118b06c76868e2845d7851d3c0e512171373453f8f8bf7df"
+  },
+  {
+    "repository": "mmonolith",
+    "file": "scripts/domain_research_fixture.py",
+    "original_sha256": "441f9bfb4ebb2d4fdde1d5684fe802d5e036a239d285f295a5ac66a61a2d3bd9",
+    "new_sha256": "06801c8fee976009e830a0c016045a22521dc1f4c33f19b7272f18c15382793d"
+  },
+  {
+    "repository": "mmonolith",
+    "file": "tests/test_domain_research.py",
+    "original_sha256": "17589badfa8623071c300c90bb1120e002ed441224e47c4cfeb746bef3d72330",
+    "new_sha256": "cff7c6c11ed869229910d254f399c67f0ecb72b984beaa5d8125bd66a0b7f087"
+  },
+  {
+    "repository": "decision_engine",
+    "file": "decision_engine/services/decision_service.py",
+    "original_sha256": "dce808f1a4f63ce7e7cfeb9ecc86d85bec13cebc6544d37025e7d58c620ed9ac",
+    "new_sha256": "37d0f0c25af6f68fbe59d5bf1ac534c77b34debc001c4faed84c71b10eb46225"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "supabase/migrations/019_service_context.sql",
+    "original_sha256": null,
+    "new_sha256": "ae1d0a9a53b7a6db69c081d9a5a04268628b6d17bc6df040bd249f04830a8b3b"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "supabase/migrations/020_legacy_tenant_reads.sql",
+    "original_sha256": null,
+    "new_sha256": "6534f784cec229ec63f6c96fe3aaaea6cf3eb99bec8434685c73a3354b52cb81"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "contracts/services.json",
+    "original_sha256": null,
+    "new_sha256": "eaf8c4fbd92cb89b791ff4f5272c227e77b7034ad4912d96f342785f9d6d5c44"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "app/admin/services/page.tsx",
+    "original_sha256": null,
+    "new_sha256": "cd402b4fa9b837f9f03e1d47691c3e2f00bde6c048f276c6aaa91d5a02bc2e7f"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "components/layout/sidebar-nav.tsx",
+    "original_sha256": "d3de9ceb9c3205c370c4b8b10bb6d852c2189e111f399956193ad1866e7ecd39",
+    "new_sha256": "e578db003e3ac9c493c5f4d468d7992046191e0f0121d8c5d63637499fcc0921"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "app/api/leads/route.ts",
+    "original_sha256": "930760c49bbc94c8b905ec354b8570c1c9513a419de1a486f4d6e35d9a7118e1",
+    "new_sha256": "f9f264c6c06537d1697d85cd3a0758dc4455bcc0eae73c4c7473a32250f4d23e"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "app/api/leads/[id]/route.ts",
+    "original_sha256": "3fca61795b10551289bcd093523d1e1ef8868638a19c16e2f80fcfb054d5dced",
+    "new_sha256": "f92d21ab80d11e42c4152412d83f3c01f80a8e582ef4b5a3c3a0c16fbcaf642f"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "app/api/leads/[id]/notes/route.ts",
+    "original_sha256": "72cf8751adc2f55c3414de402f8d6bb6c82add07937e4cc7bacb0aad601b8e1c",
+    "new_sha256": "f7e6b3088cd266ba8e7913add78e75401d90a746f38817f1976eb85852a3c027"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "lib/activity.ts",
+    "original_sha256": "88593beefd3b865cebe10220b9c792346034aa1811d3501d1956f4a62bae5c23",
+    "new_sha256": "2b34856b64c3096a5e76fdb389f3e622a0eaa780eb0b920ab9bb3e69972ff7ce"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "tests/test_decision_database.py",
+    "original_sha256": "49eeb22fcce4cbd75ac83fae11ca41f241c7383a1a95bc377f967fd938e575f5",
+    "new_sha256": "6137560069d753e65caf38b4289be1f7eadccb20c09d212a9f913aeba633dd30"
+  },
+  {
+    "repository": "devspace-crm",
+    "file": "tests/lead-auth.test.cjs",
+    "original_sha256": null,
+    "new_sha256": "fed23f267bc06d3e1ea52ba6049309b4215acb7256bf764c925b45087c7c1222"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "core/service_identity.py",
+    "original_sha256": null,
+    "new_sha256": "c50152865dca5f2b755325514faa457c91fb5c91a5fc06e61a519f49cdd42046"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "core/state.py",
+    "original_sha256": "cfb8219512f9cdb695699e6137764db5c66dba684b8e629a0c150452a767294b",
+    "new_sha256": "a40105191fb4fe6fababb0fec7af284d204fe368cdc6860333141ff01a38db63"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "core/orchestrator.py",
+    "original_sha256": "a55ebd5ebd09c4c8190343ab2ffbd6bad3edc2c9a27c8d9af98bb0a5f3ab4111",
+    "new_sha256": "62d8974920ec8c266219b8d7a29c11852cbda223c6c56f72502c3d26a7a4f817"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "core/pending.py",
+    "original_sha256": "622e7993cf9f873ab4fcfeefa7c63ed7361e9239dcbeb715a82f50879e0bc419",
+    "new_sha256": "2d461e40e07d3a24f6a2c3ac542d8fea2ff82e2eba526134b84ce7e02a236f76"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "engines/bridge.py",
+    "original_sha256": "44d81755ebd38ab8ff59cd32603782cc0ff1b0e7b0e9e52c817d79c2174c5491",
+    "new_sha256": "f4f3ae4371ec11c9dc9c76908b79403ff8ccb69f10c5db512f80dae7387ac8f3"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "main.py",
+    "original_sha256": "183bfb00b6091dca0a679af28681a29dc24b583a8859436207a5404f9033eeea",
+    "new_sha256": "0f99a3c452a1e09f251fe75ae88c4ee80df11a0b5338eff3fcca4be5704fd274"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "tests/test_control_plane.py",
+    "original_sha256": "c3a5cd07fd31cb7769bd85b6a0f04b28a68480c9d7ffe065371ae43fde7f4e08",
+    "new_sha256": "e49f639cacca01e2320b66692a9e50c7b4aecf95ac44f5f0d6beaf081031553b"
+  },
+  {
+    "repository": "dsorchestrator",
+    "file": "scripts/safe_integration.py",
+    "original_sha256": "738ea3875f17717f7eb596841ececebce9d46311b670682a92aee79b0116f966",
+    "new_sha256": "54f436257fa023b98badff54195fbcd22c47eda17aaaccfbbc6f10443c6b2dbf"
+  },
+  {
+    "repository": "devspace-one",
+    "file": "core/feedback_worker.py",
+    "original_sha256": "5c69443e6d7501ab0fd8528bfffb7f2667052b7b2e413abe56e4de38135f9522",
+    "new_sha256": "a19ca18cf5743b676f4e1f9e6c2920388bb0fa3c27dc5b86b3cd1df08e3089b5"
+  },
+  {
+    "repository": "devspace-one",
+    "file": "tests/test_feedback_worker.py",
+    "original_sha256": "a64fc644071eea06d7a1f4cb569b07ed01eb0f65aeea803ee358d9e2f4de0bdb",
+    "new_sha256": "5b7ee623b9a9fe7e75457a280cc1d9114fe022dada48da3e5da85adf3185d5f2"
+  }
+]
