@@ -20,10 +20,18 @@ def collect(config, cache=None):
         if not isinstance(result, dict) or result.get('success') is not True: raise ValueError('Invalid CRM envelope')
         return result['data']
     try:
-        orgs = get('/api/decision-engine/organizations')
+        cached_orgs = cache.get('_organizations')
+        if cached_orgs and time.monotonic()-cached_orgs[0] < config.get('capability_seconds', 60):
+            orgs, checked_at = cached_orgs[1:]
+        else:
+            orgs = get('/api/decision-engine/organizations')
+            if not isinstance(orgs, list): raise ValueError('Invalid organizations')
+            checked_at = datetime.now(timezone.utc).isoformat()
+            cache['_organizations'] = (time.monotonic(), orgs, checked_at)
         if not isinstance(orgs, list): raise ValueError('Invalid organizations')
+        engine['observed_at'] = checked_at
         engine['status'] = 'HEALTHY'
-        engine['checks'] = [{'name':'CRM API','status':'HEALTHY','reason':'Authenticated read of organization API succeeded; frontend is not required'}]
+        engine['checks'] = [{'name':'CRM API','status':'HEALTHY','reason':'Authenticated organization API read succeeded; frontend is not required. Verified '+checked_at}]
         for org in orgs:
             oid = str(UUID(org['id']))
             if oid not in config['organization_ids']: continue

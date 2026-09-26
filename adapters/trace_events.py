@@ -32,7 +32,8 @@ def collect(config):
                     event.update(trace_id=rid,trace_event_id=key(rid,engine,row.get('trace_event_id') or [row['stage'],at,row.get('event_type'),row.get('attempt',1)]),
                                  status=status(row.get('status')), timestamp=at, attempt=max(1,int(row.get('attempt',1))),
                                  duration_ms=max(0,float(row['duration_ms'])) if row.get('duration_ms') is not None else None,
-                                 metadata={},time_quality='source event')
+                                 metadata={k:row.get('metadata', {}).get(k) for k in ('table','record_id')
+                                           if isinstance(row.get('metadata'), dict) and isinstance(row['metadata'].get(k), str)},time_quality='source event')
                     if rid in runs and runs[rid]['service_id']!=row['service_id']: raise ValueError('Inconsistent service')
                     events.append(event)
                     run = runs.setdefault(rid,dict(trace_id=rid,workflow_run_id=workflow,source_run_id=workflow,

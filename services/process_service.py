@@ -17,7 +17,7 @@ def crm_processes(contexts, tracked):
         reports={r['id']:r for r in ctx.get('intelligence_reports',[])}
         for rec in ctx.get('recommendations',[]):
             if (org,rec['id']) in linked: continue
-            kind='domain' if rec['recommendation_type'].startswith('DOMAIN_') else 'devspace_services' if rec.get('execution_service') in ('devspace_outreach','apollo_outreach') else rec.get('execution_service') or 'unknown_service'
+            kind=rec.get('service_id') or ('domain' if rec['recommendation_type'].startswith('DOMAIN_') else 'devspace_services' if rec.get('execution_service') in ('devspace_outreach','apollo_outreach') else rec.get('execution_service') or 'unknown_service')
             p=ProcessStatus('crm:'+rec['id'],kind,'Recommendation · '+rec['recommendation_type'],rec['status'],organization_id=org,
                             current_stage='decision',started_at=timestamp(rec['created_at']),last_activity=timestamp(rec.get('updated_at')),source='crm')
             p.source_status=rec['status']
@@ -72,7 +72,7 @@ def crm_processes(contexts, tracked):
     for org,ctx in contexts.items():
         for report in ctx.get('intelligence_reports',[]):
             if (org,report['id']) in linked_reports: continue
-            kind='domain' if report.get('report_type')=='DOMAIN_MARKET' else report.get('service_id') or 'unknown_service'
+            kind=report.get('service_id') or ('domain' if report.get('report_type')=='DOMAIN_MARKET' else 'unknown_service')
             at=timestamp(report.get('created_at'))
             p=ProcessStatus('crm-report:'+report['id'],kind,'Research report', 'UNKNOWN',organization_id=org,
                 last_activity=at,correlation_id=report.get('correlation_id'),source='crm',

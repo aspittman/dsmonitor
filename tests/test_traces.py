@@ -104,7 +104,7 @@ def test_engine_unavailable_not_business_failure():
     r=trace(process([stage('research','mmonolith')]))
     result=overview([r],{},[{'engine_id':'mmonolith','availability':'OFFLINE'}],now=NOW)
     c=next(c for c in result['matrix'] if c['service_id']=='domain_merchant' and c['engine_id']=='mmonolith')
-    assert c['status']=='HEALTHY' and c['availability']=='OFFLINE'
+    assert c['status']=='UNKNOWN' and c['availability']=='OFFLINE'  # Historical completion is not current capability.
 
 
 def test_emitter_safe_and_parent_context(tmp_path):

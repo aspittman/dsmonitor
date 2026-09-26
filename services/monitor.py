@@ -27,13 +27,14 @@ class Monitor:
         self.thread=None
         self.last_snapshot=0
         self.crm_cache={}
+        self.probe_cache={}
         self.data={'collected_at':None,'engines':[],'processes':[],'activity':[],'errors':[], 'summary':{}, 'coverage':{}, 'organizations':[], 'registry':list(REGISTRY.values()),'monitor_errors':[]}
         for spec in config.get('extra_processes',[]): register_process(**spec)
 
     def collect(self):
         jobs={'mmonolith':lambda:mmonolith.collect(self.config), 'decision_engine':lambda:decision_engine.collect(self.config),
               'devspace_one':lambda:devspace_one.collect(self.config), 'dsorchestrator':lambda:local_collect('dsorchestrator',self.config),
-              'crm':lambda:crm.collect(self.config,self.crm_cache), 'supabase':lambda:supabase.collect(self.config),
+              'crm':lambda:crm.collect(self.config,self.crm_cache), 'supabase':lambda:self.cached_probe('supabase', lambda:supabase.collect(self.config)),
               'workflows':lambda:dsorchestrator.collect(self.config)}
         results={}
         with ThreadPoolExecutor(max_workers=7) as pool:
@@ -79,6 +80,8 @@ class Monitor:
             if p['last_error'] and not any(s['error']==p['last_error'] for s in p['stages']):
                 errors.append({'id':p['process_id']+':error','timestamp':p['last_activity'],'engine':'dsorchestrator','status':'ERROR','process_id':p['process_id'],'process_type':p['process_type'],'organization_id':p['organization_id'],'stage':p['current_stage'],'message':p['last_error'],'source':'workflow_runs'})
         engines=explain(engines,processes)
+        for engine in engines:
+            engine.setdefault('observed_at', datetime.now(timezone.utc).isoformat())
         today=datetime.now(timezone.utc).date().isoformat()
         complete=coverage['complete']
         tracked=[p for p in processes if p['source']=='dsorchestrator']
@@ -129,7 +132,7 @@ class Monitor:
             traces = [project(run, grouped.get(run['trace_id'], []), self.config) for run in runs]
             traces.sort(key=lambda r:r.get('last_activity') or '', reverse=True)
             data['traces'] = traces
-            data['trace_overview'] = overview(traces, self.config, data['engines'])
+            data['trace_overview'] = overview(traces, self.config, data['engines'], contexts=self.sanitizer.clean(contexts))
             for engine in data['engines']:
                 cells = [c for c in data['trace_overview']['matrix'] if c['engine_id']==engine['engine_id'] and c['status'] in ('FAILED','STALLED')]
                 if cells:
@@ -140,6 +143,7 @@ class Monitor:
             data['trace_overview'] = overview([], self.config, data['engines'])
             data['monitor_errors'].append('Trace normalization unavailable; independent monitoring continues')
         try:
+            self.store.service_health(data['trace_overview']['matrix'])
             self.store.events(data['activity']+data['errors'])
             if time.monotonic()-self.last_snapshot >= self.config['snapshot_seconds']:
                 self.store.save(data)
@@ -151,6 +155,15 @@ class Monitor:
 
     def snapshot(self):
         with self.lock: return copy.deepcopy(self.data)
+
+    def cached_probe(self, name, collect):
+        cached = self.probe_cache.get(name)
+        if cached and time.monotonic()-cached[0] < self.config.get('capability_seconds', 60):
+            return copy.deepcopy(cached[1])
+        result = collect()
+        result['observed_at'] = datetime.now(timezone.utc).isoformat()
+        self.probe_cache[name] = (time.monotonic(), copy.deepcopy(result))
+        return result
 
     def start(self):
         if self.thread: return

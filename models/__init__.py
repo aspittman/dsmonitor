@@ -29,6 +29,7 @@ class EngineStatus:
     checks: list = field(default_factory=list)
     dependencies: list = field(default_factory=list)
     metrics: dict = field(default_factory=dict)
+    service_capabilities: dict = field(default_factory=dict)
     activity: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 

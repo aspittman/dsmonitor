@@ -72,6 +72,8 @@ def project(run, events, config, now=None):
     path = spec.get('stages', []) if run.get('expected_path') else []
     grouped = defaultdict(list)
     for event in events:
+        if event.get('event_type') in ('read_succeeded', 'write_persisted'):
+            continue  # Artifact receipts are not stage completion transitions.
         grouped[(event['engine_id'], event['stage'])].append(event)
     order = [(s['engine_id'], s['stage']) for s in path]
     order += [pair for pair in grouped if pair not in order]
@@ -149,7 +151,7 @@ def project(run, events, config, now=None):
             'timing_note':'Observed attempt durations only; approval excluded. Missing intervals and human wait are not estimated.'}
 
 
-def overview(runs, config, engines=(), now=None):
+def overview(runs, config, engines=(), now=None, contexts=None):
     now = now if now is not None else datetime.now(timezone.utc).timestamp()
     today = datetime.fromtimestamp(now,timezone.utc).date().isoformat()
     definitions = registry(config)
@@ -169,8 +171,6 @@ def overview(runs, config, engines=(), now=None):
                 elif run.get('root_failure',{} ) and run['root_failure']['engine_id']==engine:
                     observations.append((run, {'status':'FAILED','last_activity':run['last_activity'],'duration_seconds':None}))
             observations.sort(key=lambda pair:epoch(pair[1]['last_activity']) or 0,reverse=True)
-            configured = any(s['engine_id']==engine for s in spec.get('stages',[])) or spec.get('coordinator')==engine
-            st = observations[0][1]['status'] if observations else 'NO_DATA' if configured else 'NOT_CONFIGURED'
             successes = [s['last_activity'] for r in runs if r['service_id']==service for s in r['stages'] if s['engine_id']==engine and s['status']=='COMPLETED' and s.get('last_activity')]
             failed_attempts = sum(e['status']=='FAILED' and (e.get('timestamp') or '').startswith(today) for r in runs if r['service_id']==service for e in r['events'] if e['engine_id']==engine)
             consecutive = 0
@@ -178,24 +178,9 @@ def overview(runs, config, engines=(), now=None):
                 if observed['status']!='FAILED': break
                 consecutive += 1
             fails = sum(s['status']=='FAILED' and (s.get('last_activity') or '').startswith(today) for r,s in observations)
-            reason = 'Latest observed run in this engine; bounded monitoring evidence.'
-            if st=='COMPLETED':
-                st='HEALTHY' if observations[0][1].get('last_activity') else 'UNKNOWN'
-                if st=='UNKNOWN': reason='Completion observed in an undated source; current service health is unknown.'
-            if any(s['status']=='STALLED' for _,s in observations):
-                st='STALLED'; reason='At least one observed run exceeded an explicitly configured activity threshold.'
-            elif consecutive:
-                reason=f'{consecutive} consecutive observed run(s) failed inside this engine.'
-            frequency = spec.get('expected_activity_seconds')
-            if observations and frequency and now-(epoch(observations[0][1]['last_activity']) or now)>frequency:
-                st='DEGRADED'; reason='Configured expected activity interval exceeded; not a workflow failure.'
-            if not observations:
-                blocked = [r for r in runs if r['service_id']==service and any(s['engine_id']==engine for s in r['downstream_not_reached'])]
-                latest_run = max((r for r in runs if r['service_id']==service),key=lambda r:epoch(r.get('last_activity')) or 0,default=None)
-                if latest_run in blocked and latest_run is not None: st='NOT_REACHED'; reason='Latest workflow stopped upstream; this engine is not counted as failed.'
-                else: reason='Configured path has no observed stage records.' if configured else spec.get('note','No registered path or observed records.')
             available = next((e.get('availability') for e in engines if e['engine_id']==engine), 'UNKNOWN')
-            cells.append({'service_id':service,'engine_id':engine,'status':st,'reason':reason,
+            cells.append({'service_id':service,'engine_id':engine,'status':'UNKNOWN','reason':'Current capability not evaluated',
+                'historical_status':observations[0][1]['status'] if observations else 'UNKNOWN',
                 'availability':available,'last_success':max(successes) if successes else None,
                 'last_activity':observations[0][1]['last_activity'] if observations else None,
                 'latest_run':observations[0][0]['trace_id'] if observations else None,
@@ -210,7 +195,7 @@ def overview(runs, config, engines=(), now=None):
         return values.most_common(1)[0][0] if values else None
     stalled = sorted((r for r in reliable if r['status']=='STALLED'),key=lambda r:r.get('last_activity') or '')
     failures.sort(key=lambda r:r.get('last_activity') or '',reverse=True)
-    return {'matrix':cells,'services':[{'service_id':s,**definitions.get(s,{'note':'Unregistered service; actual events retained.'})} for s in services],
+    result = {'matrix':cells,'services':[{'service_id':s,**definitions.get(s,{'note':'Unregistered service; actual events retained.'})} for s in services],
         'summary':{'completed_today':sum(r['status']=='COMPLETED' and (r.get('completed_at') or '').startswith(today) for r in reliable),
             'running':counts['RUNNING'],'waiting':counts['WAITING']+counts['WAITING_FOR_APPROVAL'],
             'stalled':counts['STALLED'],'failed':counts['FAILED'], 'observed_runs':len(reliable),
@@ -218,3 +203,5 @@ def overview(runs, config, engines=(), now=None):
             'most_common_failing_stage':common('stage'),'oldest_stalled':stalled[0]['trace_id'] if stalled else None,
             'most_recent_failure':failures[0]['trace_id'] if failures else None,
             'scope':'Observed authoritative workflows retained locally; not ecosystem-wide totals. UTC days.'}}
+    from services.service_health import upgrade
+    return upgrade(result, runs, engines, contexts or {}, config, now)

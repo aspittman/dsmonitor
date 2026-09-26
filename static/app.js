@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? 'N/A').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state = null, busy = false;
-const statusClass = status => ['HEALTHY','COMPLETED'].includes(status) ? 'good' : ['ERROR','OFFLINE','FAILED'].includes(status) ? 'bad' : ['DEGRADED','STALLED','STALE','WAITING','WAITING_FOR_APPROVAL','PARTIAL','BLOCKED'].includes(status) ? 'warn' : ['ONLINE','RUNNING'].includes(status) ? 'running' : '';
+const statusClass = status => ['HEALTHY','COMPLETED','IDLE','CONNECTED','VERIFIED','CONFIRMED'].includes(status) ? 'good' : ['ERROR','OFFLINE','FAILED','DISCONNECTED'].includes(status) ? 'bad' : ['DEGRADED','STALLED','STALE','WAITING','WAITING_FOR_APPROVAL','PARTIAL','BLOCKED','LATE','PENDING'].includes(status) ? 'warn' : ['ONLINE','RUNNING'].includes(status) ? 'running' : '';
 const badge = status => `<span class="badge ${statusClass(status)}">${esc(status || 'UNKNOWN')}</span>`;
 const time = value => value ? new Date(value).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : 'N/A';
 const ago = value => {if(!value)return 'N/A';const seconds=Math.floor((Date.now()-Date.parse(value))/1000);if(seconds<0)return 'Future timestamp';return seconds<60?`${seconds}s ago`:seconds<3600?`${Math.floor(seconds/60)}m ago`:seconds<86400?`${Math.floor(seconds/3600)}h ago`:`${Math.floor(seconds/86400)}d ago`;};

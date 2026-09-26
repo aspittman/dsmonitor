@@ -20,6 +20,10 @@ class SnapshotStore:
             CREATE TABLE IF NOT EXISTS trace_events(trace_event_id TEXT PRIMARY KEY, trace_id TEXT NOT NULL, timestamp TEXT, data TEXT NOT NULL);
             CREATE INDEX IF NOT EXISTS trace_run ON trace_events(trace_id, timestamp);
             CREATE INDEX IF NOT EXISTS trace_observed ON workflow_runs(observed_at);''')
+            db.executescript('''CREATE TABLE IF NOT EXISTS service_health_history(
+                id INTEGER PRIMARY KEY, service_id TEXT NOT NULL, engine_id TEXT NOT NULL,
+                timestamp REAL NOT NULL, status TEXT NOT NULL, reason TEXT NOT NULL);
+                CREATE INDEX IF NOT EXISTS service_health_time ON service_health_history(service_id, engine_id, timestamp);''')
         self.path.chmod(0o600)
 
     @contextmanager
@@ -32,6 +36,7 @@ class SnapshotStore:
     def save(self, data):
         # Only normalized monitoring fields enter history, never raw CRM payloads.
         stored = {k:data[k] for k in ('collected_at','engines','processes','summary','coverage')}
+        stored['service_health'] = data.get('trace_overview', {}).get('matrix', [])
         with self.connect() as db:
             now=time.time()
             db.execute('INSERT INTO snapshots(timestamp,data) VALUES(?,?)',(now,json.dumps(stored)))
@@ -73,3 +78,26 @@ class SnapshotStore:
             for rid,_ in rows:
                 events.extend(json.loads(r[0]) for r in db.execute('SELECT data FROM trace_events WHERE trace_id=? ORDER BY timestamp', (rid,)))
             return runs, events
+
+    def service_health(self, cells):
+        """Record observed transitions, not inferred business recovery timestamps."""
+        from adapters.base import timestamp
+        with self.connect() as db:
+            now = time.time()
+            for cell in cells:
+                params = (cell['service_id'], cell['engine_id'])
+                prior = db.execute('SELECT status FROM service_health_history WHERE service_id=? AND engine_id=? ORDER BY id DESC LIMIT 1', params).fetchone()
+                if not prior or prior[0] != cell['status']:
+                    db.execute('INSERT INTO service_health_history(service_id,engine_id,timestamp,status,reason) VALUES(?,?,?,?,?)', (*params, now, cell['status'], cell['reason']))
+                rows = db.execute('SELECT timestamp,status,reason FROM service_health_history WHERE service_id=? AND engine_id=? ORDER BY id DESC LIMIT 20', params).fetchall()
+                cell['health_history'] = [{'observed_at': timestamp(at), 'status': status, 'reason': reason} for at, status, reason in rows]
+                cell['recovered_at'] = None
+                cell['previous_issue'] = None
+                if cell['status'] in ('HEALTHY', 'IDLE'):
+                    # UNKNOWN is lost coverage, never evidence of recovery.
+                    bad = next((r for r in rows[1:] if r[1] in ('FAILED', 'DEGRADED', 'DISCONNECTED')), None)
+                    if bad:
+                        good = [r for r in rows if r[0] > bad[0] and r[1] in ('HEALTHY', 'IDLE')]
+                        cell['recovered_at'] = timestamp(good[-1][0]) if good else None
+                        cell['previous_issue'] = bad[2]
+            db.execute('DELETE FROM service_health_history WHERE timestamp < ?', (now-self.retention,))

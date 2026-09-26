@@ -25,6 +25,7 @@ def load_config():
     defaults = {
         'projects': str(base), 'refresh_seconds': 10, 'snapshot_seconds': 120,
         'timeout_seconds': 3, 'crm_context_seconds': 120, 'retention_days': 30, 'limit': 200,
+        'capability_seconds': 60, 'write_evidence_seconds': 86400,
         'database': str(ROOT / 'data/dsmonitor.db'), 'port': 5055,
         'orchestrator_sqlite': str(base / 'dsorchestrator/data/orchestrator.sqlite3'),
         'orchestrator_dsn': '', 'supabase_dsn': '',
@@ -42,7 +43,7 @@ def load_config():
             defaults[key] = json.loads(value) if isinstance(default, (list, dict)) else type(default)(value)
     from uuid import UUID
     defaults['organization_ids'] = [str(UUID(x)) for x in defaults['organization_ids']]
-    for key in ('refresh_seconds', 'snapshot_seconds', 'timeout_seconds', 'retention_days', 'limit', 'heartbeat_max_age', 'crm_context_seconds'):
+    for key in ('refresh_seconds', 'snapshot_seconds', 'timeout_seconds', 'retention_days', 'limit', 'heartbeat_max_age', 'crm_context_seconds', 'capability_seconds', 'write_evidence_seconds'):
         if defaults[key] <= 0:
             raise ValueError(key + ' must be positive')
     if len(defaults['organization_ids']) > 20:

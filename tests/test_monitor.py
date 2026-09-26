@@ -185,7 +185,7 @@ def test_malformed_crm_record_does_not_hide_independent_workflows(config,monkeyp
     assert data['monitor_errors']
 
 
-def test_crm_context_is_cached_but_health_is_rechecked(config,monkeypatch):
+def test_crm_context_and_capability_have_separate_cache_ttls(config,monkeypatch):
     config.update(crm_url='http://localhost:1',crm_token='test',organization_ids=[ORG])
     calls=[]
     def get(url,*a,**k):
@@ -193,6 +193,10 @@ def test_crm_context_is_cached_but_health_is_rechecked(config,monkeypatch):
         return {'success':True,'data':[{'id':ORG}] if url.endswith('organizations') else {'recommendations':[]}}
     monkeypatch.setattr(crm,'get_json',get)
     cache={};crm.collect(config,cache);crm.collect(config,cache)
+    assert sum(x.endswith('organizations') for x in calls)==1
+    at, rows, observed_at = cache['_organizations']
+    cache['_organizations']=(at-61, rows, observed_at)
+    crm.collect(config,cache)
     assert sum(x.endswith('organizations') for x in calls)==2
     assert sum(x.endswith('context') for x in calls)==2
 

@@ -96,6 +96,22 @@ def collect(engine, config):
             good = isinstance(data, dict) and str(data.get('status', '')).upper() in ('HEALTHY','OK')
             result.status = 'HEALTHY' if good else 'DEGRADED'
             result.checks.append({'name':'API', 'status':result.status,'reason':'Health endpoint reports healthy' if good else 'API responded but did not report healthy'})
+            reports = data.get('service_capabilities', {}) if isinstance(data, dict) else {}
+            if isinstance(reports, dict):
+                for service, report in list(reports.items())[:100]:
+                    if not isinstance(report, dict): continue
+                    reads = report.get('reads', {})
+                    result.service_capabilities[service] = {
+                        'checked_at': timestamp(report.get('checked_at')),
+                        'connectivity_status': report.get('connectivity_status'),
+                        'write_status': report.get('write_status'),
+                        'last_read': timestamp(report.get('last_read')),
+                        'work_expected': report.get('work_expected') if isinstance(report.get('work_expected'), bool) else None,
+                        'organization_ids': [org for org in report.get('organization_ids', []) if isinstance(org, str)][:20] if isinstance(report.get('organization_ids'), list) else [],
+                        'reason': str(report.get('reason') or 'Engine-reported capability')[:500],
+                        'reads': {str(table): {'status': value.get('status'), 'reason': str(value.get('reason') or '')[:500]}
+                                  for table, value in list(reads.items())[:100] if isinstance(value, dict)} if isinstance(reads, dict) else {},
+                    }
         except Exception:
             result.status = 'DEGRADED' if alive else 'OFFLINE'
             result.checks.append({'name':'API','status':'OFFLINE','reason':'Configured endpoint unavailable or invalid'})

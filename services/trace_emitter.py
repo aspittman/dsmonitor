@@ -15,7 +15,7 @@ def new_context(service_id, *, workflow_run_id=None, organization_id=None, paren
                 organization_id=organization_id, parent_run_id=parent_run_id, correlation_id=correlation_id)
 
 
-def trace_event(path, context, *, engine_id, stage, event_type, status, attempt=1, duration_ms=None, error_type=None):
+def trace_event(path, context, *, engine_id, stage, event_type, status, attempt=1, duration_ms=None, error_type=None, table=None, record_id=None):
     # Deliberately exclude arbitrary payloads, exception text, credentials and metadata.
     try:
         if not context.get('workflow_run_id') or not context.get('service_id'): return False
@@ -23,6 +23,9 @@ def trace_event(path, context, *, engine_id, stage, event_type, status, attempt=
         event.update(trace_event_id=str(uuid4()),engine_id=engine_id,stage=stage,event_type=event_type,
                      status=status,attempt=attempt,duration_ms=duration_ms,error_type=error_type,
                      timestamp=datetime.now(timezone.utc).isoformat())
+        if table is not None and record_id is not None:
+            if not isinstance(table, str) or not isinstance(record_id, str) or len(table)>100 or len(record_id)>200: return False
+            event['metadata'] = {'table': table, 'record_id': record_id}
         payload = (json.dumps(event,allow_nan=False)+'\n').encode()
         fd = os.open(path,os.O_WRONLY|os.O_CREAT|os.O_APPEND|os.O_NONBLOCK,0o600)
         try: os.write(fd,payload)

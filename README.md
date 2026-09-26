@@ -163,3 +163,12 @@ its sample events are browser-only fixtures.
 Trace Explorer separates tracked workflow IDs from CRM record views and engine log entries. A stored research report confirms CRM persistence, not downstream consumption or a completed service run. A log can confirm that an evaluation was reported while lacking its occurrence timestamp. Missing times are not replaced with monitor collection time. Service registry entries describe configured services and are not evidence that a service ran.
 
 The CRM / Supabase tab reads the existing organization-scoped CRM contexts. It shows record identity, contract owner, source table, source timestamps, and explicit links whose endpoints were both verified within the same tenant. These are stored relationships, not captured HTTP requests, raw payloads, or proof of every engine read. API latency, attempted writes, and consumer read receipts require source instrumentation that is not supplied by these context endpoints. The monitor remains read-only and does not add operational instrumentation or start engines.
+
+Services now separates current capability, source activity, expected schedules and
+explicit data flow. Historical stage completion alone no longer produces HEALTHY.
+The existing trace explorers, matrix, process/error monitoring and shared-state
+views remain available. See [the Services health upgrade report](docs/SERVICE_HEALTH_UPGRADE_REPORT.md)
+for exact status rules, engine health-report instrumentation, configuration,
+read-only live validation, query/cache costs and remaining UNKNOWN handoffs.
+The latest diagnosis is in [service-health-validation.json](docs/service-health-validation.json);
+earlier diagnosis sections above describe earlier observations.
