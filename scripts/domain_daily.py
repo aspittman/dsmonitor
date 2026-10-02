@@ -33,20 +33,26 @@ def run(repo, args, environment):
                    env=environment, check=True)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=('research', 'decide', 'outreach'))
-    args = parser.parse_args()
-    config = json.loads(CONFIG.read_text())
-    dev = dotenv(ROOT / 'devspace-one/.env')
-    monolith = dotenv(ROOT / 'mmonolith/.env')
-    decision = dotenv(ROOT / 'decision_engine/.env')
-    org = str(UUID(config.get('organization_id') or dev['DOMAIN_MERCHANT_ORG_ID']))
+def job_environment(base=ROOT):
+    """Shared by normal jobs and read-only diagnostics; never exports credentials."""
+    dev = dotenv(base / 'devspace-one/.env')
+    monolith = dotenv(base / 'mmonolith/.env')
+    decision = dotenv(base / 'decision_engine/.env')
     common = {**os.environ, **dev, **monolith, **decision}
     common['CRM_BASE_URL'] = common.get('CRM_BASE_URL') or common.get('CRM_API_URL', '')
     common['BOT_API_SECRET'] = common.get('BOT_API_SECRET') or common.get('CRM_BOT_API_SECRET', '')
     common['CRM_API_URL'] = common.get('CRM_API_URL') or common['CRM_BASE_URL']
     common['CRM_API_SECRET'] = common.get('CRM_API_SECRET') or common['BOT_API_SECRET']
+    return common
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('stage', choices=('research', 'decide', 'review', 'outreach'))
+    args = parser.parse_args()
+    config = json.loads(CONFIG.read_text())
+    common = job_environment()
+    org = str(UUID(config.get('organization_id') or dotenv(ROOT / 'devspace-one/.env')['DOMAIN_MERCHANT_ORG_ID']))
     common['APOLLO_SENDING_EMAIL'] = config['apollo_sender_email']
     if args.stage == 'research':
         run('mmonolith', ['-m', 'services.domain_intelligence', '--organization', org, '--learn'], common)
@@ -63,15 +69,23 @@ def main():
                 command += ['--namebio-live']
             for key, flag in [('sales_file', '--sales-file'), ('namebio_file', '--namebio-file'),
                               ('demand_file', '--demand-file'), ('buyers_file', '--buyers-file'),
-                              ('availability_file', '--availability-file')]:
+                              ('availability_file', '--availability-file'),
+                              ('quote_file', '--quote-file'), ('assessment_file', '--assessment-file')]:
                 if topic.get(key):
                     command += [flag, topic[key]]
             if topic.get('registrar_check'):
                 command += ['--registrar-check']
+            if topic.get('with_keywords') is True:
+                command += ['--with-keywords']  # Explicit opt-in to a billed provider.
             run('mmonolith', command, common)
     elif args.stage == 'decide':
         run('decision_engine', ['main.py', '--organization', org,
                                 '--trigger', 'SCHEDULED_REVIEW'], common)
+    elif args.stage == 'review':
+        # Executes only previously approved zero-spend research reviews. No approval,
+        # purchase, provider lookup or outreach is performed by this worker.
+        run('devspace-one', ['-m', 'core.domain_review_worker', '--organization', org], common)
+        run('mmonolith', ['-m', 'services.domain_intelligence', '--organization', org, '--learn'], common)
     else:
         run('devspace-one', ['jobs/run_service.py', 'afternic_sync',
                              '--organization-id', org], common)

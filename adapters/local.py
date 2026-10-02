@@ -8,6 +8,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 from adapters.base import timestamp, epoch, get_json
 from models import EngineStatus
+from adapters.capabilities import normalize as normalize_capabilities, from_file
 
 PROJECTS = {'mmonolith': ('MMonolith', 'mmonolith'), 'decision_engine': ('Decision Engine', 'decision_engine'),
             'devspace_one': ('DevSpace One', 'devspace-one'), 'dsorchestrator': ('dsorchestrator', 'dsorchestrator')}
@@ -19,6 +20,7 @@ def process_alive(root):
         if not p.name.isdigit() or int(p.name) == os.getpid(): continue
         try:
             args = (p/'cmdline').read_bytes().split(b'\0')
+            if any(b'capability_probe.py' in a for a in args[1:]): continue  # A diagnostic is not a business worker.
             if not args or not re.match(r'^(python[\d.]*|uvicorn|gunicorn)$', Path(args[0].decode()).name): continue
             # Exact cwd or absolute entrypoint; never match shell/grep/monitor command text.
             if (p/'cwd').resolve() == root or any(a.decode(errors='replace').startswith(str(root)+'/') and a.endswith(b'.py') for a in args[1:]): return True
@@ -96,25 +98,16 @@ def collect(engine, config):
             good = isinstance(data, dict) and str(data.get('status', '')).upper() in ('HEALTHY','OK')
             result.status = 'HEALTHY' if good else 'DEGRADED'
             result.checks.append({'name':'API', 'status':result.status,'reason':'Health endpoint reports healthy' if good else 'API responded but did not report healthy'})
-            reports = data.get('service_capabilities', {}) if isinstance(data, dict) else {}
-            if isinstance(reports, dict):
-                for service, report in list(reports.items())[:100]:
-                    if not isinstance(report, dict): continue
-                    reads = report.get('reads', {})
-                    result.service_capabilities[service] = {
-                        'checked_at': timestamp(report.get('checked_at')),
-                        'connectivity_status': report.get('connectivity_status'),
-                        'write_status': report.get('write_status'),
-                        'last_read': timestamp(report.get('last_read')),
-                        'work_expected': report.get('work_expected') if isinstance(report.get('work_expected'), bool) else None,
-                        'organization_ids': [org for org in report.get('organization_ids', []) if isinstance(org, str)][:20] if isinstance(report.get('organization_ids'), list) else [],
-                        'reason': str(report.get('reason') or 'Engine-reported capability')[:500],
-                        'reads': {str(table): {'status': value.get('status'), 'reason': str(value.get('reason') or '')[:500]}
-                                  for table, value in list(reads.items())[:100] if isinstance(value, dict)} if isinstance(reads, dict) else {},
-                    }
+            result.service_capabilities = normalize_capabilities(data.get('service_capabilities', {}) if isinstance(data, dict) else {})
         except Exception:
             result.status = 'DEGRADED' if alive else 'OFFLINE'
             result.checks.append({'name':'API','status':'OFFLINE','reason':'Configured endpoint unavailable or invalid'})
+    reports, issue = from_file(engine, config)
+    for service, report in reports.items():
+        previous = result.service_capabilities.get(service, {})
+        if (epoch(report.get('checked_at')) or 0) > (epoch(previous.get('checked_at')) or 0):
+            result.service_capabilities[service] = report
+    if issue: result.checks.append({'name':'Service capability coverage','status':'UNKNOWN','reason':issue})
     heartbeat = config['heartbeat_files'].get(engine)
     if heartbeat:
         try:

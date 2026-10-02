@@ -31,6 +31,14 @@ def create_app(config=None, start_collector=True):
     @app.get('/api/status')
     def status(): return jsonify(monitor.snapshot())
 
+    @app.get('/api/diagnostics')
+    def diagnostics():
+        from services.domain_diagnostic import recent_reports
+        from services.security import Sanitizer
+        from config import ROOT
+        rows = recent_reports(settings.get('diagnostic_dir', ROOT / 'data/diagnostics'), settings.get('organization_ids', []))
+        return jsonify(Sanitizer(settings.get('secrets', [])).clean(rows))
+
     @app.get('/api/history')
     def history():
         try: return jsonify(monitor.store.history('events' if request.args.get('kind')=='events' else 'snapshots'))
@@ -63,7 +71,10 @@ def create_app(config=None, start_collector=True):
         return jsonify(row) if row else (jsonify({'error':'Trace not in retained monitoring window'}),404)
 
     @app.get('/healthz')
-    def health(): return jsonify({'status':'ONLINE','application':'dsmonitor','collected_at':monitor.snapshot()['collected_at']})
+    def health():
+        data=monitor.snapshot()
+        fresh=data['monitor_freshness']['status']=='FRESH'
+        return jsonify({'status':'ONLINE' if fresh else data['monitor_freshness']['status'], 'application':'dsmonitor','collected_at':data['collected_at']}), 200 if fresh else 503
 
     if start_collector: monitor.start()
     return app

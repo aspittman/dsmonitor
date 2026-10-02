@@ -1,5 +1,6 @@
 """Optional bounded structured JSONL source; each configured engine fails independently."""
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from adapters.base import timestamp
 from services.trace_service import key, status
@@ -7,7 +8,11 @@ from services.trace_service import key, status
 
 def collect(config):
     runs, events, issues = {}, [], []
-    for engine, filename in config.get('trace_files', {}).items():
+    files=list(config.get('trace_files', {}).items())
+    for engine, directory in (('mmonolith','mmonolith'),('decision_engine','decision_engine'),('devspace_one','devspace-one'),('dsorchestrator','dsorchestrator')):
+        path=Path(config.get('projects','/nonexistent'))/directory/'logs/capability_events.jsonl'
+        if path.is_file() and (engine,str(path)) not in files: files.append((engine,str(path)))
+    for engine, filename in files:
         try:
             with Path(filename).open('rb') as stream:
                 stream.seek(0, 2)
@@ -20,12 +25,14 @@ def collect(config):
                     row = json.loads(line)
                     if row.get('engine_id') != engine: raise ValueError('Engine mismatch')
                     workflow = row.get('workflow_run_id')
-                    if not workflow or not row.get('service_id') or not row.get('stage'): raise ValueError('Missing context')
+                    receipt = row.get('event_type') in ('read_succeeded','write_persisted') and isinstance(row.get('metadata'),dict) and bool(row['metadata'].get('record_id')) and bool(row['metadata'].get('table'))
+                    if not (workflow or receipt) or not row.get('service_id') or not row.get('stage'): raise ValueError('Missing context')
                     org = row.get('organization_id')
+                    if receipt and not org: raise ValueError('Receipt requires organization')
                     if org and org not in config.get('organization_ids', []): continue
                     at = timestamp(row.get('timestamp'))
                     if not at: raise ValueError('Missing time')
-                    rid = key('workflow',org,workflow)
+                    rid = key('workflow',org,workflow) if workflow else key('receipt',org,engine,row.get('trace_event_id') or [row['source_reference'],at])
                     allowed = ('workflow_run_id','parent_run_id','service_id','organization_id','correlation_id',
                                'engine_id','stage','event_type','message','error_type','error_message','source_reference')
                     event = {k:row.get(k) for k in allowed}
@@ -36,12 +43,12 @@ def collect(config):
                                            if isinstance(row.get('metadata'), dict) and isinstance(row['metadata'].get(k), str)},time_quality='source event')
                     if rid in runs and runs[rid]['service_id']!=row['service_id']: raise ValueError('Inconsistent service')
                     events.append(event)
-                    run = runs.setdefault(rid,dict(trace_id=rid,workflow_run_id=workflow,source_run_id=workflow,
-                        source='structured_trace',service_id=row['service_id'],organization_id=org,
+                    run = runs.setdefault(rid,dict(trace_id=rid,workflow_run_id=workflow,source_run_id=workflow or row.get('source_reference'),
+                        source='structured_trace' if workflow else 'capability_receipt',service_id=row['service_id'],organization_id=org,
                         parent_run_id=row.get('parent_run_id'),correlation_id=row.get('correlation_id'),
-                        correlation_quality='EXPLICIT TRACE CONTEXT',started_at=None,completed_at=None,last_activity=at,
-                        source_status='UNKNOWN',source_current_stage=None,error_message=None,lineage=[],expected_path=True,
-                        reason='Explicit source trace context; completion requires workflow_completed event.',observed_at=at))
+                        correlation_quality='EXPLICIT TRACE CONTEXT' if workflow else 'EXPLICIT ARTIFACT RECEIPT / NO WORKFLOW ID',started_at=None,completed_at=None,last_activity=at,
+                        source_status='UNKNOWN',source_current_stage=None,error_message=None,lineage=[],expected_path=bool(workflow),
+                        reason='Artifact receipts prove read/persistence only; completion requires workflow_completed event.',observed_at=datetime.now(timezone.utc).isoformat()))
                     if run['service_id'] != row['service_id']: raise ValueError('Inconsistent service')
                     if row.get('event_type')=='workflow_started': run['started_at']=min(run['started_at'] or at,at)
                     if at>=run['last_activity']:

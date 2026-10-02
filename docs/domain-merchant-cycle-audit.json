@@ -1,0 +1,119 @@
+{
+  "observed_at": "2026-09-26T13:46:27.537991+00:00",
+  "organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd",
+  "scope": "Existing authenticated CRM GET context; existing local logs and source; offline pure strategy evaluation. No operational run, mutations, approvals, paid lookups, outreach or purchases.",
+  "table_counts": {
+    "organization_services": 1,
+    "decision_constraints": 1,
+    "market_signals": 0,
+    "intelligence_reports": 28,
+    "intelligence_report_signals": 0,
+    "execution_results": 0,
+    "recommendations": 1,
+    "execution_requests": 0,
+    "predictions": 0,
+    "feedback_evaluations": 0,
+    "intelligence_report_feedback": 0,
+    "organizations": 1,
+    "execution_capabilities": 7,
+    "recommendation_evidence": 1
+  },
+  "latest_reports": [
+    {
+      "subject_key": "loans",
+      "id": "1e1035ea-e3f6-4993-83e6-8d474d58192c",
+      "run_key": "2026-09-26-loans",
+      "created_at": "2026-09-26T13:00:08.077769+00:00",
+      "confidence": 0.247525,
+      "candidate_count": 50,
+      "reported_sales_count": 300,
+      "keyword_demand_present": false,
+      "candidates_with_buyer_count": 0,
+      "availability_status_counts": {
+        "unknown": 50
+      }
+    },
+    {
+      "subject_key": "mortgage",
+      "id": "9753a123-fce2-4a1a-83c3-b1b15f922d8c",
+      "run_key": "2026-09-26-mortgage",
+      "created_at": "2026-09-26T13:00:10.599223+00:00",
+      "confidence": 0,
+      "candidate_count": 0,
+      "reported_sales_count": 0,
+      "keyword_demand_present": false,
+      "candidates_with_buyer_count": 0,
+      "availability_status_counts": {}
+    },
+    {
+      "subject_key": "roofing",
+      "id": "39257c02-e7aa-4322-a977-7f2156d4921a",
+      "run_key": "2026-09-26-roofing",
+      "created_at": "2026-09-26T13:00:12.834384+00:00",
+      "confidence": 0,
+      "candidate_count": 0,
+      "reported_sales_count": 0,
+      "keyword_demand_present": false,
+      "candidates_with_buyer_count": 0,
+      "availability_status_counts": {}
+    },
+    {
+      "subject_key": "tools",
+      "id": "ab6e26fd-090a-49f3-835f-e71a8fb0023a",
+      "run_key": "2026-09-26-tools",
+      "created_at": "2026-09-26T13:00:14.967535+00:00",
+      "confidence": 0,
+      "candidate_count": 0,
+      "reported_sales_count": 0,
+      "keyword_demand_present": false,
+      "candidates_with_buyer_count": 0,
+      "availability_status_counts": {}
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "1b25db61-8b70-4bf5-b8bd-d9e28bc6be01",
+      "decision_run_id": "683ca7f2-0265-4c89-96a2-961c54e46ba2",
+      "recommendation_type": "NO_ACTION",
+      "execution_service": null,
+      "status": "RECOMMENDED",
+      "created_at": "2026-09-20T06:04:50.225446+00:00"
+    }
+  ],
+  "execution_capability": [
+    {
+      "id": "25d4d7cf-61fb-4ff5-9ae1-33acbbf011f9",
+      "service_key": "domain_merchant",
+      "status": "AVAILABLE",
+      "allowed_actions": [
+        "investigate_domain_category"
+      ],
+      "adapter_ready": false,
+      "allow_manual": false,
+      "updated_at": "2026-09-20T06:01:28.671776+00:00"
+    }
+  ],
+  "offline_evaluation": {
+    "eligible": false,
+    "score": 25.0,
+    "confidence": 0.247525,
+    "blocking_reasons": [
+      "No candidate passes every evidence check: search_demand, potential_buyers, available_with_affordable_quote",
+      "Confidence below client minimum",
+      "Opportunity below scoring threshold"
+    ],
+    "report_id": "1e1035ea-e3f6-4993-83e6-8d474d58192c",
+    "failed_check_counts": {
+      "search_demand": 50,
+      "potential_buyers": 50,
+      "available_with_affordable_quote": 50,
+      "comparable_sales": 14
+    }
+  },
+  "latest_historical_decision": {
+    "decision_run_id": "52bbb8eb-e37c-4dec-acf9-1cc724c8442b",
+    "recommendations_created": 0,
+    "errors": []
+  },
+  "lineage_limit": "Latest report persistence is confirmed by identical CRM ID and MMonolith receipt. No downstream exact-ID consumption receipt exists at audit time; no shared workflow ID assumed."
+}

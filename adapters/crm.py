@@ -9,6 +9,8 @@ from models import EngineStatus
 def collect(config, cache=None):
     if cache is None: cache = {}
     engine = EngineStatus('crm', 'DevSpace CRM', infrastructure=True).dict()
+    from adapters.capabilities import from_file
+    engine['service_capabilities'], probe_issue = from_file('crm', config)
     contexts, organizations = {}, []
     if not config['crm_url'] or not config['crm_token']:
         engine['checks'] = [{'name':'CRM API','status':'UNKNOWN','reason':'CRM URL or API credential not configured'}]
@@ -18,6 +20,8 @@ def collect(config, cache=None):
         result = get_json(config['crm_url'].rstrip('/')+route, config['timeout_seconds'], headers,
                           '?' + urlencode({'organization_id':org}) if org else '')
         if not isinstance(result, dict) or result.get('success') is not True: raise ValueError('Invalid CRM envelope')
+        if route == '/api/bot/monitoring-context':
+            return result['data'], result.get('coverage', {})
         return result['data']
     try:
         cached_orgs = cache.get('_organizations')
@@ -41,12 +45,14 @@ def collect(config, cache=None):
                 if cached and time.monotonic() - cached[0] < config['crm_context_seconds']:
                     contexts[oid] = cached[1]
                     continue
-                context = get('/api/decision-engine/context', oid)
-                context.update(get('/api/bot/feedback-loop/context', oid))
+                context, coverage = get('/api/bot/monitoring-context', oid)
                 for table, rows in context.items():
                     if table == 'execution_capabilities': continue
                     key = 'id' if table == 'organizations' else 'organization_id'
                     if not isinstance(rows, list) or any(r.get(key) != oid for r in rows): raise ValueError('Tenant mismatch')
+                if coverage.get('failed_tables'):
+                    engine['checks'].append({'name':'Historical context coverage','status':'UNKNOWN','reason':'Tables unavailable: '+', '.join(coverage['failed_tables'])})
+                engine['checks'].append({'name':'Historical context bounds','status':'OBSERVED','reason':'Latest 100 records per table; absent historical links remain unverified.'})
                 context['_observed_at'] = datetime.now(timezone.utc).isoformat()
                 contexts[oid] = context
                 cache[oid] = (time.monotonic(), context)
@@ -54,7 +60,7 @@ def collect(config, cache=None):
                 engine['status'] = 'DEGRADED'
                 engine['dependency_status'] = 'UNKNOWN'
                 engine['monitoring_issue'] = 'Organization monitoring context could not be verified; this does not establish an engine failure'
-                engine['checks'].append({'name':'Organization '+oid,'status':'UNKNOWN','reason':'Context unavailable, oversized, or tenant validation failed'})
+                engine['checks'].append({'name':'Organization '+oid,'status':'UNKNOWN','reason':'Bounded monitoring-context endpoint unavailable or tenant validation failed; deploy/check the CRM monitoring route. Historical context is unverified.'})
         if contexts:
             oldest = min(ctx['_observed_at'] for ctx in contexts.values())
             engine['checks'].append({'name':'CRM context freshness','status':'ONLINE','reason':f'Oldest context observation: {oldest}; refresh interval {config["crm_context_seconds"]}s'})

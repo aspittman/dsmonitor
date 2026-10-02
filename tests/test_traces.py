@@ -126,7 +126,7 @@ def test_api_and_trace_adapter_failure(tmp_path,monkeypatch):
     from app import create_app
     from config import load_config
     from adapters import dsorchestrator
-    c=load_config();c.update(database=str(tmp_path/'db'),projects=str(tmp_path),crm_url='',supabase_url='',orchestrator_sqlite=str(tmp_path/'absent'),trace_files={'devspace_one':str(tmp_path/'absent')},decision_trace_log=str(tmp_path/'absent'),organization_ids=[])
+    c=load_config();c.update(capability_files={},database=str(tmp_path/'db'),projects=str(tmp_path),crm_url='',supabase_url='',orchestrator_sqlite=str(tmp_path/'absent'),trace_files={'devspace_one':str(tmp_path/'absent')},decision_trace_log=str(tmp_path/'absent'),organization_ids=[])
     monkeypatch.setattr(dsorchestrator,'collect',lambda _:([process([stage('decision','decision_engine','FAILED')],source_status='FAILED')],{'status':'HEALTHY','complete':True,'reason':'test'}))
     app=create_app(c,start_collector=False)
     data=app.extensions['monitor'].collect()

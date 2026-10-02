@@ -1,0 +1,290 @@
+[
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/SERVICE_STRATEGIES.md",
+    "destination": "/home/aaron/MyBotz/decision_engine/SERVICE_STRATEGIES.md",
+    "sha256": "e6398aecb8791fef090be9ce8d2d68855879ac8484549bd97e36296ef7f7ff56",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/registry.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/registry.py",
+    "sha256": "6afde7707104d07919c6f8c23c8fff8eccee68db58325f24cd19dc4d948fe297",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_acquisition.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_acquisition.py",
+    "sha256": "395fafeb05fe3f2000b125c4ba155ef4985446f6fb7a84e1540c9ed3e16edd5b",
+    "previous_sha256": "353edc8aedcb23224506cbbac5f6b13a4a4910adbe318c348dcba8073bed3384"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/__init__.py",
+    "sha256": "e8c53e4bb82ad16a7312c9aeeb98962ecbd9f3402ea2bfaee3099e08fd5796d1",
+    "previous_sha256": "da99cd80402cecdc85359038c8d208c83ee31c66514cf1e05d18fb732ab5e56f"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/assessment.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/assessment.py",
+    "sha256": "5e0ba161ee6754527d9c95f6a163e86e7d865625eabd1b790f30e871e37b91ad",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_services/audit.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_services/audit.py",
+    "sha256": "b517ff4e582e1549ff22a23ddf22204f19b6d725e27b5288ca247d2e5793c186",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_services/prospect.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_services/prospect.py",
+    "sha256": "715e7a172c493e9c84593809b5b64d8b9b54dd6050c874a3cded4a2dfef9616f",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_services/outreach.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_services/outreach.py",
+    "sha256": "73c4ca4be6bf96785121bdbb40c7a485e46b348840c5a411f7bb05f5ff2de5d8",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_services/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_services/__init__.py",
+    "sha256": "cf868d87243dc56502e1624ee1e795a5b6782a630936a54cf2658fc6e368bb1d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/scholarship_research/quality.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/scholarship_research/quality.py",
+    "sha256": "15881104271bf6172e72d5875d1652b0d17caf7ef1ba15ec75c83e13268d6e37",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/scholarship_research/eligibility.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/scholarship_research/eligibility.py",
+    "sha256": "46b7dbefa6f6fb1e9aaa10ddbb866cac62ee04f95373877087e29f9064aa52f8",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/scholarship_research/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/scholarship_research/__init__.py",
+    "sha256": "cf868d87243dc56502e1624ee1e795a5b6782a630936a54cf2658fc6e368bb1d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_clients/opportunity.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_clients/opportunity.py",
+    "sha256": "84bd803a953f81060eced5cdadd07a0182131d657ce3c2fc19166d36f929b87a",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_clients/optimization.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_clients/optimization.py",
+    "sha256": "6507215e7a379dd5c82d199753faa462e1c9227da7a35432b87f19cd880f8bcb",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/devspace_clients/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/devspace_clients/__init__.py",
+    "sha256": "cf868d87243dc56502e1624ee1e795a5b6782a630936a54cf2658fc6e368bb1d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/investor_research/opportunity.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/investor_research/opportunity.py",
+    "sha256": "a540679a409fae20b846a2c7a84f9fdeb08332d5f113009c86f499edd918a9a9",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/investor_research/investor_match.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/investor_research/investor_match.py",
+    "sha256": "aa0765a4112b89dcf52d98101279fe79f2d9d3041fcf02e6d11f79a87825afa1",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/investor_research/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/investor_research/__init__.py",
+    "sha256": "cf868d87243dc56502e1624ee1e795a5b6782a630936a54cf2658fc6e368bb1d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/scoring.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/scoring.py",
+    "sha256": "67c52b55255732857fbc77113a15c37a82095c970eb0576cd1e32e0e1e60ec05",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/review.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/review.py",
+    "sha256": "7e5e0ee4312ebd2b34c9794ec053832676076dc159f080e4e326ea568d7c395b",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/outreach.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/outreach.py",
+    "sha256": "16fa335ff5136d22828a6221fac79bf15a9a30ce1318b79d3f0908eb63d1055d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/acquisition.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/acquisition.py",
+    "sha256": "7890a538cfe33f553165550c76fd3af59c27d024d95b513e0c03026c8851c49c",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/__init__.py",
+    "sha256": "cf868d87243dc56502e1624ee1e795a5b6782a630936a54cf2658fc6e368bb1d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/strategies/domain_merchant/pricing.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/strategies/domain_merchant/pricing.py",
+    "sha256": "793a006a23f13bae2626d2a007761f0ee2eabfd4ce7a22285e977dfc484f82fa",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/config/settings.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/config/settings.py",
+    "sha256": "f9c6874906fbe9e6274fae1b35fb7a88612edfc51b9f42fd5565a2203d2f22bc",
+    "previous_sha256": "a4cea2308525fb5a862b67ce5cb432e9affdd7640fbd25a9c5ec9d8e1b771563"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/config/scoring.json",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/config/scoring.json",
+    "sha256": "be709522fb5163b43025dc3e7ed1f180f47ac3db1ad9ed0d585c1356362c01b1",
+    "previous_sha256": "2996e04fea94d3cce99c33aa09f01847e492e1b6ef98930ec90631f72b30cefb"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/repositories/crm.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/repositories/crm.py",
+    "sha256": "f46726c456b25216da4a13d8cb6457bbca2414316ca505a0ebb1aca92fb0572a",
+    "previous_sha256": "7f4ca96e15030ca2cf34a66bce6eaef66bc57aadcb201b7a5699b9176296f495"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/decision_engine/services/decision_service.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/services/decision_service.py",
+    "sha256": "e9007b18fd9720608d60c28ea1e316d9f313541892b3a88388f7fe4cb493ff31",
+    "previous_sha256": "37d0f0c25af6f68fbe59d5bf1ac534c77b34debc001c4faed84c71b10eb46225"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/tests/test_domain_raw_evidence.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/tests/test_domain_raw_evidence.py",
+    "sha256": "b50b24ffb84f3df755f2ab2f9d25a5b107b7d0024e7565810fa87d1c7787a8c3",
+    "previous_sha256": "b61142d3f6e48d26c5bdfb77810c38a7311e9c08780c416829e6b115280327ca"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/decision_engine/tests/test_service_strategies.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/tests/test_service_strategies.py",
+    "sha256": "c13f683e71b311f5df268ae9a817a740bb1688e0deb64c09efbb788efb9b1133",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/DOMAIN_AUTHORIZED_INPUTS.md",
+    "destination": "/home/aaron/MyBotz/mmonolith/DOMAIN_AUTHORIZED_INPUTS.md",
+    "sha256": "d43efe23732cdd5b31bbb7aac5a6c9757e04d6c98162fb794e7981011a06786e",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/services/domain_intelligence/discover.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/discover.py",
+    "sha256": "14bc37a882e8c0f23dfa257821cf898a6b8b7932bd558b2944699fadff07629d",
+    "previous_sha256": "5361406bc919dd26aabc31781e3cc9961efd1238c5f4893b3c5513693a2a6f72"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/services/domain_intelligence/authorized_inputs.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/authorized_inputs.py",
+    "sha256": "e0cc64cd32cae1ba667727b92fb0f3433a6e58349eb258bce4bc48185a86e47c",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/services/domain_intelligence/research.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/research.py",
+    "sha256": "e2e9b3240a6e294e89c87dc9abe3eed82d89da3f3119679680995b703d4dc26a",
+    "previous_sha256": "8d9b395e0cd9221372520917cf835f63d0f6d7a9e67f80b59af707a3723352ee"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/services/domain_intelligence/client.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/client.py",
+    "sha256": "e972e90b2ccb5ad8ab10ccd0bb7f2f5f1f4bc8f6ee7e796106bfee32bb137bb0",
+    "previous_sha256": "19b9fe39cbaeba840134477de9f57b2d5abd7552af27122168a8748ae1334313"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/services/domain_intelligence/service.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/service.py",
+    "sha256": "bc0b53063081de63e81561ca861f5a6cb3d8d4af672e80a11376f88a7f6484cc",
+    "previous_sha256": "2c5885c833f76f318a337a6206d61f708255bb46cf89296c4818c510f4fdd293"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/mmonolith/tests/test_authorized_inputs.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/tests/test_authorized_inputs.py",
+    "sha256": "48e15c1690bef80fe4821a1d673c97952265036b00b1e8c9afa7caed2d89cd7c",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-one/DOMAIN_REVIEW_WORKER.md",
+    "destination": "/home/aaron/MyBotz/devspace-one/DOMAIN_REVIEW_WORKER.md",
+    "sha256": "9f1d681b4cd1ec83fbb4d7c1c72d3c159845fb9b84655ed4ce6bbdbd72cf50ab",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-one/core/domain_review_worker.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/core/domain_review_worker.py",
+    "sha256": "e4e22d8b20b9782332bc552da62c41605f415ba8f8a1225a0571129e35653dae",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-one/core/crm_client.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/core/crm_client.py",
+    "sha256": "0d3818a3a84443ccd2fcfa44473f797609312841d06734fa5d748602627554b2",
+    "previous_sha256": "33af3a8ee1178dbdba5e92b9b082678c0b8c533ee857069ec90e0738987130f0"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-one/tests/test_domain_review_worker.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/tests/test_domain_review_worker.py",
+    "sha256": "b2fcfe2a639efb02cdee3ce950a95fcfc36e652462389206cc8a3fa555e1b80d",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/dsorchestrator/runners/local.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/runners/local.py",
+    "sha256": "bc0f803d49e29ebf0502ebdc7d15bbcbb4640db3e9b0c82052a1588cc22df5ed",
+    "previous_sha256": "34f365a8b9d027b9aa8ef8bcdc48e31d724990ad348d29158bc14e03971c267d"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/dsorchestrator/engines/bridge.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/engines/bridge.py",
+    "sha256": "65fe7b581d186628e0205da682e0e6e6d0942952decb60c0c3e2a4e064a4a35d",
+    "previous_sha256": "f4f3ae4371ec11c9dc9c76908b79403ff8ccb69f10c5db512f80dae7387ac8f3"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/dsorchestrator/tests/test_production_review_bridge.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/tests/test_production_review_bridge.py",
+    "sha256": "10bcc215fe064ecbe0ee86f3069829dfdb8a476e7baa336cf8c3f90f38c898bb",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-crm/lib/feedback-loop-api.ts",
+    "destination": "/home/aaron/MyBotz/devspace-crm/lib/feedback-loop-api.ts",
+    "sha256": "f606917a616b95be52dd523ce4847ea9c8d3fd367389784e0989746b64c7a8e6",
+    "previous_sha256": "916d5ae56ede0a8574676b1c3bd592e08ebffe23190815e8ec307b6175bf4fa8"
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-crm/supabase/migrations/021_domain_evidence_review.sql",
+    "destination": "/home/aaron/MyBotz/devspace-crm/supabase/migrations/021_domain_evidence_review.sql",
+    "sha256": "c53e1e90f0cd861a9f68f9a15258b407d9b45a615ac5d2bac4ee44e38f9d331f",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-crm/tests/test_domain_review_cycle.py",
+    "destination": "/home/aaron/MyBotz/devspace-crm/tests/test_domain_review_cycle.py",
+    "sha256": "b24637e68a5f44c2794d60719dc9a6dba516d2f11198b4bf77dd6a865a0cde44",
+    "previous_sha256": null
+  },
+  {
+    "source": "/tmp/service-strategy-upgrade/devspace-crm/tests/domain-review-api.test.cjs",
+    "destination": "/home/aaron/MyBotz/devspace-crm/tests/domain-review-api.test.cjs",
+    "sha256": "ddf513733647baf6bd677198e31c45dec802650864e6ad3d266ea5976423e59b",
+    "previous_sha256": null
+  }
+]

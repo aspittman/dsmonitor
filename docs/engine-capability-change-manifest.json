@@ -1,0 +1,206 @@
+[
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/monitoring/README.md",
+    "destination": "/home/aaron/MyBotz/mmonolith/monitoring/README.md",
+    "before_sha256": null,
+    "after_sha256": "98bdd42cb612dc62ae209b6445cae8ee166da10de6c21d918be5fb66a6f6bf86"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/monitoring/__init__.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/monitoring/__init__.py",
+    "before_sha256": null,
+    "after_sha256": "9d4e2cba732b1373fdd1cde208e8688cae062a54e90e8a4fee1045825b26299e"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/monitoring/capability_probe.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/monitoring/capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "e705e6cbbb4be02f8e20ddd689b3540ceda96b680bf6bc60023cee174dd86797"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/monitoring/profile.json",
+    "destination": "/home/aaron/MyBotz/mmonolith/monitoring/profile.json",
+    "before_sha256": null,
+    "after_sha256": "071b8ccdd37b960ff35b957d3ed4ccff0f712922fdfd4b5fe53727387595ae30"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/monitoring/receipts.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/monitoring/receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/services/domain_intelligence/client.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/client.py",
+    "before_sha256": "350de25cef62676a118b06c76868e2845d7851d3c0e512171373453f8f8bf7df",
+    "after_sha256": "19b9fe39cbaeba840134477de9f57b2d5abd7552af27122168a8748ae1334313"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/services/domain_intelligence/monitoring_receipts.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/monitoring_receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/mmonolith/tests/test_capability_probe.py",
+    "destination": "/home/aaron/MyBotz/mmonolith/tests/test_capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "03eefee82fa0af88a2518a63398b739d319119e2416b4c319e52febea03be49b"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/decision_engine/clients/crm_client.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/clients/crm_client.py",
+    "before_sha256": "e791c186e76978c3fbc8a49ad8f88033432133b1546122cced92bab1dcd2f092",
+    "after_sha256": "81bdc09c163003843b3641fd6efec8536652df1bcab3cc52a234d58562f3cae0"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/decision_engine/monitoring_receipts.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/decision_engine/monitoring_receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/monitoring/README.md",
+    "destination": "/home/aaron/MyBotz/decision_engine/monitoring/README.md",
+    "before_sha256": null,
+    "after_sha256": "98bdd42cb612dc62ae209b6445cae8ee166da10de6c21d918be5fb66a6f6bf86"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/monitoring/__init__.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/monitoring/__init__.py",
+    "before_sha256": null,
+    "after_sha256": "9d4e2cba732b1373fdd1cde208e8688cae062a54e90e8a4fee1045825b26299e"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/monitoring/capability_probe.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/monitoring/capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "e705e6cbbb4be02f8e20ddd689b3540ceda96b680bf6bc60023cee174dd86797"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/monitoring/profile.json",
+    "destination": "/home/aaron/MyBotz/decision_engine/monitoring/profile.json",
+    "before_sha256": null,
+    "after_sha256": "5c4d000194d93e36d2adb6ea36c764007ddb92be55d5118cfb234137ef22ce94"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/monitoring/receipts.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/monitoring/receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/decision_engine/tests/test_capability_probe.py",
+    "destination": "/home/aaron/MyBotz/decision_engine/tests/test_capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "03eefee82fa0af88a2518a63398b739d319119e2416b4c319e52febea03be49b"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/core/crm_client.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/core/crm_client.py",
+    "before_sha256": "e4ceaa511dba9d7866f71ddffc909551de0b4f28a31f373b6b556dc461bfe5f1",
+    "after_sha256": "33af3a8ee1178dbdba5e92b9b082678c0b8c533ee857069ec90e0738987130f0"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/core/monitoring_receipts.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/core/monitoring_receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/monitoring/README.md",
+    "destination": "/home/aaron/MyBotz/devspace-one/monitoring/README.md",
+    "before_sha256": null,
+    "after_sha256": "98bdd42cb612dc62ae209b6445cae8ee166da10de6c21d918be5fb66a6f6bf86"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/monitoring/__init__.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/monitoring/__init__.py",
+    "before_sha256": null,
+    "after_sha256": "9d4e2cba732b1373fdd1cde208e8688cae062a54e90e8a4fee1045825b26299e"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/monitoring/capability_probe.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/monitoring/capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "e705e6cbbb4be02f8e20ddd689b3540ceda96b680bf6bc60023cee174dd86797"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/monitoring/profile.json",
+    "destination": "/home/aaron/MyBotz/devspace-one/monitoring/profile.json",
+    "before_sha256": null,
+    "after_sha256": "dcadc4cdd8e8357d51ac2d2bdf52589cb6b23e7cb3cd9eeb1859edbcd4a99ca7"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/monitoring/receipts.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/monitoring/receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-one/tests/test_capability_probe.py",
+    "destination": "/home/aaron/MyBotz/devspace-one/tests/test_capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "03eefee82fa0af88a2518a63398b739d319119e2416b4c319e52febea03be49b"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/core/monitoring_receipts.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/core/monitoring_receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/core/state.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/core/state.py",
+    "before_sha256": "a40105191fb4fe6fababb0fec7af284d204fe368cdc6860333141ff01a38db63",
+    "after_sha256": "0271223def6b35f22acd4fa8f933f38eb326a8654561d9526c645ce22424334f"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/monitoring/README.md",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/monitoring/README.md",
+    "before_sha256": null,
+    "after_sha256": "98bdd42cb612dc62ae209b6445cae8ee166da10de6c21d918be5fb66a6f6bf86"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/monitoring/__init__.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/monitoring/__init__.py",
+    "before_sha256": null,
+    "after_sha256": "9d4e2cba732b1373fdd1cde208e8688cae062a54e90e8a4fee1045825b26299e"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/monitoring/capability_probe.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/monitoring/capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "e705e6cbbb4be02f8e20ddd689b3540ceda96b680bf6bc60023cee174dd86797"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/monitoring/profile.json",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/monitoring/profile.json",
+    "before_sha256": null,
+    "after_sha256": "625841c3076a8d040790bb0d19713a92ea5965fe2c463b0b6adca303ab0c718b"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/monitoring/receipts.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/monitoring/receipts.py",
+    "before_sha256": null,
+    "after_sha256": "0852c537222df7d1916db133ea56f0d37b8429cf6d18854a435ea0ed685cc593"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/dsorchestrator/tests/test_capability_probe.py",
+    "destination": "/home/aaron/MyBotz/dsorchestrator/tests/test_capability_probe.py",
+    "before_sha256": null,
+    "after_sha256": "03eefee82fa0af88a2518a63398b739d319119e2416b4c319e52febea03be49b"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-crm/app/api/bot/monitoring-capabilities/route.ts",
+    "destination": "/home/aaron/MyBotz/devspace-crm/app/api/bot/monitoring-capabilities/route.ts",
+    "before_sha256": null,
+    "after_sha256": "033cf89410d36989f43b47af6c509baab8da905f585c8915473ec6232a612c1f"
+  },
+  {
+    "source": "/tmp/devspace-capability-upgrade/repos/devspace-crm/tests/monitoring-capabilities.test.cjs",
+    "destination": "/home/aaron/MyBotz/devspace-crm/tests/monitoring-capabilities.test.cjs",
+    "before_sha256": null,
+    "after_sha256": "0c1308cea09f3be351bd981ec0548c7e1a60be187be792b2d193487c38f68188"
+  }
+]

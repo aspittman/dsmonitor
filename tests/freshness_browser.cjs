@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const {projectFreshness}=require('../static/freshness.js');
+const before=Date.parse('2026-09-29T00:00:00Z');
+const expires=new Date(before+45000).toISOString();
+const r={status:'READY',checked_at:new Date(before).toISOString(),expires_at:expires};
+const payload={monitor_freshness:{...r,status:'FRESH'},engines:[{readiness:r,status:'READY',last_success:'yesterday'}],trace_overview:{matrix:[{status:'READY',readiness:r}],summary:{running:2}},summary:{active_processes:2}};
+assert.equal(projectFreshness(payload,before).engines[0].status,'READY');
+const after=projectFreshness(payload,before+46000);
+assert.equal(after.engines[0].status,'STALE');assert.equal(after.trace_overview.matrix[0].status,'STALE');assert.equal(after.engines[0].last_success,'yesterday');assert.equal(after.summary.active_processes,null);assert.equal(payload.engines[0].status,'READY');
+console.log('Browser expiry checks passed');

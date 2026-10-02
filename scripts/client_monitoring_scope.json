@@ -1,0 +1,19 @@
+{
+  "devspace_clients": [
+    "62539265-e1ae-4e14-8360-416747590585",
+    "0da3f571-a388-490f-90b9-e08e3609159f",
+    "88c1cb4f-e471-4d4b-8708-a87b3f4a229c",
+    "76b76aa2-8989-4fe9-a234-c16ddcbce989",
+    "20ea8b66-cc49-48e5-972e-2e89ed9a27e5",
+    "fe127a4a-3e4a-4bbe-b85a-9d09ce396e2d"
+  ],
+  "devspace_services": [
+    "2ee8ba95-35f4-4af9-b746-12071ed8815a"
+  ],
+  "scholarship_research": [
+    "2ee8ba95-35f4-4af9-b746-12071ed8815a"
+  ],
+  "investor_research": [
+    "2ee8ba95-35f4-4af9-b746-12071ed8815a"
+  ]
+}

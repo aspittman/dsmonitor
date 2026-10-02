@@ -19,7 +19,7 @@ OTHER='22222222-2222-4222-8222-222222222222'
 @pytest.fixture
 def config(tmp_path):
     c=load_config()
-    c.update(projects=str(tmp_path),database=str(tmp_path/'monitor.db'),crm_url='',crm_token='',supabase_url='',supabase_key='',supabase_dsn='',orchestrator_dsn='',organization_ids=[],secrets=['extremely-private-secret'],orchestrator_sqlite=str(tmp_path/'source.db'),health_urls={},heartbeat_files={},stale_seconds={})
+    c.update(capability_files={},projects=str(tmp_path),database=str(tmp_path/'monitor.db'),crm_url='',crm_token='',supabase_url='',supabase_key='',supabase_dsn='',orchestrator_dsn='',organization_ids=[],secrets=['extremely-private-secret'],orchestrator_sqlite=str(tmp_path/'source.db'),health_urls={},heartbeat_files={},stale_seconds={})
     return c
 
 
@@ -198,7 +198,7 @@ def test_crm_context_and_capability_have_separate_cache_ttls(config,monkeypatch)
     cache['_organizations']=(at-61, rows, observed_at)
     crm.collect(config,cache)
     assert sum(x.endswith('organizations') for x in calls)==2
-    assert sum(x.endswith('context') for x in calls)==2
+    assert sum(x.endswith('monitoring-context') for x in calls)==1  # One bounded context endpoint, cached independently.
 
 
 def test_full_source_trace_uses_only_id_links(config):

@@ -25,6 +25,7 @@ class Monitor:
         self.lock=threading.Lock()
         self.stop=threading.Event()
         self.thread=None
+        self.probe_thread=None
         self.last_snapshot=0
         self.crm_cache={}
         self.probe_cache={}
@@ -154,7 +155,9 @@ class Monitor:
         return data
 
     def snapshot(self):
-        with self.lock: return copy.deepcopy(self.data)
+        from services.freshness import project
+        with self.lock: data=copy.deepcopy(self.data)
+        return project(data, self.config)
 
     def cached_probe(self, name, collect):
         cached = self.probe_cache.get(name)
@@ -167,6 +170,15 @@ class Monitor:
 
     def start(self):
         if self.thread: return
+        def probes():
+            from scripts.engine_capabilities import cycle
+            while not self.stop.is_set():
+                began=time.monotonic()
+                try: cycle(self.config)
+                except Exception: pass  # Source reports expire; no fabricated success.
+                self.stop.wait(max(1, self.config.get('probe_interval_seconds',45)-(time.monotonic()-began)))
+        self.probe_thread=threading.Thread(target=probes,daemon=True,name='dsmonitor-capability-probes')
+        self.probe_thread.start()
         def loop():
             while not self.stop.is_set():
                 try: self.collect()

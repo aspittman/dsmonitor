@@ -53,7 +53,54 @@ DEFAULTS['devspace_services'].update(configured=True,
              'devspace_one': {'inputs': ['leads'], 'outputs': ['leads'],
                               'dependencies': ['crm']}},
     handoffs=[{'id': 'outreach_ingestion', 'from': 'devspace_one', 'to': 'crm', 'table': 'leads'}],
-    note='Partial CRM / DevSpace One outreach participation: domain-exists reads leads; /api/ingest persists companies, contacts and leads. Existing loop context does not expose these legacy receipts. The declared cross-engine lifecycle has no real business adapters.')
+    note='Partial CRM / DevSpace One outreach participation: domain-exists reads leads; /api/ingest persists companies, contacts and leads. Existing loop context does not expose these legacy receipts. Decision advisory policies exist locally, but their execution path is not activated. This registration monitors the existing outreach ingestion path; email delivery and the full orchestrator lifecycle are not verified by lead ingestion.')
+
+
+# Client growth publishes directly to Supabase; the CRM and draft adapters are
+# separately verified. Register implementation, never manufacture healthy state.
+DEFAULTS['devspace_clients'].update(configured=True,
+    stages=[{'stage': stage, 'engine_id': engine} for stage, engine in (
+        ('research', 'mmonolith'), ('decision', 'decision_engine'),
+        ('approval', 'crm'), ('execution', 'devspace_one'))],
+    engines={
+        'mmonolith': {'inputs': ['execution_results', 'intelligence_reports'],
+                     'outputs': ['intelligence_reports'], 'dependencies': ['supabase'],
+                     'write_evidence_seconds': 691200},
+        'decision_engine': {'inputs': ['intelligence_reports'],
+                            'outputs': ['recommendations'], 'dependencies': ['crm']},
+        'crm': {'inputs': ['intelligence_reports', 'recommendations', 'execution_requests', 'execution_results'],
+                'outputs': ['execution_requests'], 'dependencies': ['supabase']},
+        'devspace_one': {'inputs': ['execution_requests'],
+                        'outputs': ['execution_results'], 'dependencies': ['crm']},
+    },
+    handoffs=[dict(edge) for edge in DEFAULTS['domain_merchant']['handoffs']
+              if edge['id'] != 'feedback_read'],
+    note='Weekly customer/referral and competitor research publishes client-specific reports directly to Supabase. Its connection is independently verified with tenant/service-scoped reads using the research credential. CRM onboarding and approved draft preparation are separately deployed and verified. Drafts are not sent emails. No client orchestrator schedule is activated.')
+
+
+# The service-demand research path is independent of legacy lead ingestion.
+DEFAULTS['devspace_services']['engines'].update({
+    'mmonolith': {'inputs': ['execution_results', 'intelligence_reports'],
+        'outputs': ['intelligence_reports'], 'dependencies': ['supabase'], 'write_evidence_seconds': 691200},
+    'decision_engine': {'inputs': ['intelligence_reports'], 'outputs': [], 'dependencies': ['crm']},
+})
+DEFAULTS['devspace_services']['stages'] = [
+    {'stage': 'research', 'engine_id': 'mmonolith'}, {'stage': 'decision', 'engine_id': 'decision_engine'}]
+DEFAULTS['devspace_services']['handoffs'] += [
+    {'id': 'service_demand_publication', 'from': 'mmonolith', 'to': 'crm', 'table': 'intelligence_reports'},
+]
+DEFAULTS['devspace_services']['note'] = 'Demand research publishes directly to Supabase; Decision Engine records demand-only advisory rankings in decision-run summaries. Pricing does not block research. Existing DevSpace One lead ingestion is a separate partial path; a service test or offering needs its own approval and execution plan.'
+
+
+# Product services currently participate in research, matching and storage only.
+for product in ('scholarship_research','investor_research'):
+    DEFAULTS[product].update(configured=True,
+        stages=[{'stage':'research','engine_id':'mmonolith'},{'stage':'decision','engine_id':'decision_engine'}],
+        engines={'mmonolith':{'inputs':['intelligence_reports'],'outputs':['intelligence_reports'],'dependencies':['supabase'],'write_evidence_seconds':691200},
+                 'decision_engine':{'inputs':['intelligence_reports'],'outputs':[],'dependencies':['crm']},
+                 'crm':{'inputs':['intelligence_reports'],'outputs':[],'dependencies':['supabase']}},
+        handoffs=[{'id':'product_intelligence_write','from':'mmonolith','to':'crm','table':'intelligence_reports'}],
+        note='Global product intelligence and profile-specific matching are implemented. Organization enablement, source access and profiles must be verified. DevSpace One execution and orchestrator production adapters are not configured; they are not required for the research/matching path.')
 
 
 def registry(config):

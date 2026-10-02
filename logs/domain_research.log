@@ -23,3 +23,54 @@
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "6892e952-3306-4f7f-b2ed-df9a3403f1db", "path": "data/processed/domain_intelligence/7cc9c921e6bbf75433c0238c9b35ed8bd364a903a42e732441ee5e69b35c072f.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "10558e7f-76d6-4dd9-a337-66bef4419bb4", "path": "data/processed/domain_intelligence/2a394d72ab3ee6d35c6ec102d2c3eeb4c3f347cc113c1747fd663378cbd2af62.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "1da6a7b0-3150-4fea-ad90-ab1bbcdfff31", "path": "data/processed/domain_intelligence/670b69d3e0789cc2a03f7919e46255f6e5736fd45bfa407c4f71f4e1bc2d79e3.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "1e1035ea-e3f6-4993-83e6-8d474d58192c", "path": "data/processed/domain_intelligence/5b09c1537a004b49b5c9ea18dc46beeaee957690867a3be45fd6f039b9cb752e.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "9753a123-fce2-4a1a-83c3-b1b15f922d8c", "path": "data/processed/domain_intelligence/5410d21d3b64c8b437ea2fb3cf1054ba1b0e53db83f27a23efeac8683b55a8c7.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "39257c02-e7aa-4322-a977-7f2156d4921a", "path": "data/processed/domain_intelligence/6fc62a7b63de7c0ce96f581a1b902b48697adc45896043bfc21e71f9d1dcb69a.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "ab6e26fd-090a-49f3-835f-e71a8fb0023a", "path": "data/processed/domain_intelligence/53c426e44da65a8a6f57efccb283cf200ef0178de59693a17124cc028736f3be.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "ef4fe11c-f790-49a9-acbd-595bcaffccea", "path": "data/processed/domain_intelligence/ffcb6e63758e822cd3d340622b038406844ac9478edc2bd026d15d5b8b0cf6bf.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "d9512ce2-a4be-43b9-b6cd-8bbca16c3e90", "path": "data/processed/domain_intelligence/799383a04df0367eb8bad26adb64a0d14c4fdd528eb67317d64e32cd6f3ad832.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "7e7e24f3-c3ef-4f50-88db-b629d723dbaf", "path": "data/processed/domain_intelligence/f0258f05b947844b9ab0f05530c13b3a040396baade14fd4bb117dfdaedb807f.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "2055c2d4-1657-4cfb-bb4c-3c9c0227766e", "path": "data/processed/domain_intelligence/57a50d1ef31c127cee905f309b20dc7cf2a85dabfc7caf9b5c90a693ee7aeceb.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "8005a8c3-6db7-43ec-b5ae-8becdc76b04f", "path": "data/processed/domain_intelligence/2aa96022c358722e5d43521eee15e2462f30c94ec9dc06a0d44aa2cc2258b994.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "cff4fe98-399c-4ac0-b17f-a7ca0b37f972", "path": "data/processed/domain_intelligence/55efdef12fb4264d73ea21075ae405e52ad8ef832d9b0d917ad01dca9cc0f907.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "2d80ac20-6def-4d8f-877d-950587714959", "path": "data/processed/domain_intelligence/904a1eb6bbae949dd2011579f00b7bf3100ec6b5091977f7ec9f25f52e35fb01.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "fdcf5708-152e-4eba-9838-60709b93cd4c", "path": "data/processed/domain_intelligence/3d70b90ff4c8bc4b2e227974917f48ea20326b5967cba4bae7d9ba4500427ca7.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 44, in <module>
+    if __name__=='__main__': main()
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 23, in main
+    print(json.dumps({'organization_id':args.organization,'feedback_ids':learn(client,args.organization,policy)}))
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/service.py", line 183, in learn
+    context=client.context(org)
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/client.py", line 33, in context
+    data = self.request('GET', 'context', org)
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/client.py", line 30, in request
+    raise RuntimeError('CRM connection failed') from None
+RuntimeError: CRM connection failed
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 98, in <module>
+    main()
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 58, in main
+    run('mmonolith', ['-m', 'services.domain_intelligence', '--organization', org, '--learn'], common)
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 32, in run
+    subprocess.run([sys.executable, *args], cwd=ROOT / repo,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '-m', 'services.domain_intelligence', '--organization', '06eaf14d-a535-4ccc-ad17-286da58d3fdd', '--learn']' returned non-zero exit status 1.
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "f03113d2-fdc7-4993-acf6-1bcf400c690a", "path": "data/processed/domain_intelligence/069c162b3cbd99f8cb5952542243853405181764a5dd93ecf77506b2fe93968e.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "2a885a88-50a7-47e4-9bc9-a918e1411b1a", "path": "data/processed/domain_intelligence/7096c5f76d4d2770d045f6a9dae28bddf12a87cff883461bcab586fa6acd7bc7.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "bdaf3663-cbd1-41c4-bfbc-88bcf8d9a4b7", "path": "data/processed/domain_intelligence/0302960e59c912781db5f94a25d10cd6e3c2f9e7a0dbc17f4f12eafde3ba3465.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "7c917a64-a482-41d4-a498-8e3c25cb7a90", "path": "data/processed/domain_intelligence/679603c56836ac9756b69ef9aa856e1a6801e980440a6a5b091cf489f9caaede.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "4235f6e3-2a88-4613-b3d0-8f48795be892", "path": "data/processed/domain_intelligence/98c0c5d2aa947a4b950d301931e9e7c77a0b4451d470cf1935f2aee22e095828.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "6710f887-3d81-45f2-82ec-2443d2f363ee", "path": "data/processed/domain_intelligence/3e188b6e63dfa3d1ea761eea0c1cb055a2d5ee2c095c393ae5f79e670f04ec13.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "76350e02-3b69-4760-a47a-65e51295030d", "path": "data/processed/domain_intelligence/c294be30b35dd92386dae22ab530d15636f7e2a274ee6650a547f5b752f55997.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "fae56b42-69d9-46d4-9023-0dbfc864e8ea", "path": "data/processed/domain_intelligence/4c6c521cdaf8b467d924b6a0e20ff4140a4a974c2bd64b48fba9b2eb38e1c975.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}

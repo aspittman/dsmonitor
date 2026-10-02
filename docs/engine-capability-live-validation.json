@@ -1,0 +1,72 @@
+{
+  "collected_at": "2026-09-26T06:09:13.930288+00:00",
+  "domain_merchant": [
+    {
+      "engine_id": "mmonolith",
+      "status": "UNKNOWN",
+      "connectivity_status": "CONNECTED",
+      "read_status": "VERIFIED",
+      "write_status": "UNVERIFIED",
+      "handoff_status": "UNKNOWN",
+      "activity_status": "UNKNOWN",
+      "reason": "Insufficient current capability / flow evidence: connectivity=CONNECTED, read=VERIFIED, write=UNVERIFIED, handoff=UNKNOWN, activity=UNKNOWN",
+      "last_read": null,
+      "last_write": "2026-09-25T13:01:31.013991+00:00",
+      "observed_at": "2026-09-26T06:09:15.487513+00:00"
+    },
+    {
+      "engine_id": "decision_engine",
+      "status": "UNKNOWN",
+      "connectivity_status": "CONNECTED",
+      "read_status": "VERIFIED",
+      "write_status": "UNVERIFIED",
+      "handoff_status": "UNKNOWN",
+      "activity_status": "UNKNOWN",
+      "reason": "Insufficient current capability / flow evidence: connectivity=CONNECTED, read=VERIFIED, write=UNVERIFIED, handoff=UNKNOWN, activity=UNKNOWN",
+      "last_read": null,
+      "last_write": null,
+      "observed_at": "2026-09-26T06:09:15.487513+00:00"
+    },
+    {
+      "engine_id": "crm",
+      "status": "UNKNOWN",
+      "connectivity_status": "CONNECTED",
+      "read_status": "VERIFIED",
+      "write_status": "UNVERIFIED",
+      "handoff_status": "UNKNOWN",
+      "activity_status": "UNKNOWN",
+      "reason": "Insufficient current capability / flow evidence: connectivity=CONNECTED, read=VERIFIED, write=UNVERIFIED, handoff=UNKNOWN, activity=UNKNOWN",
+      "last_read": null,
+      "last_write": null,
+      "observed_at": "2026-09-26T06:09:15.487513+00:00"
+    },
+    {
+      "engine_id": "dsorchestrator",
+      "status": "UNKNOWN",
+      "connectivity_status": "CONNECTED",
+      "read_status": "VERIFIED",
+      "write_status": "UNVERIFIED",
+      "handoff_status": "UNKNOWN",
+      "activity_status": "UNKNOWN",
+      "reason": "Insufficient current capability / flow evidence: connectivity=CONNECTED, read=VERIFIED, write=UNVERIFIED, handoff=UNKNOWN, activity=UNKNOWN",
+      "last_read": null,
+      "last_write": null,
+      "observed_at": "2026-09-26T06:09:15.487513+00:00"
+    },
+    {
+      "engine_id": "devspace_one",
+      "status": "UNKNOWN",
+      "connectivity_status": "CONNECTED",
+      "read_status": "VERIFIED",
+      "write_status": "UNVERIFIED",
+      "handoff_status": "UNKNOWN",
+      "activity_status": "UNKNOWN",
+      "reason": "Insufficient current capability / flow evidence: connectivity=CONNECTED, read=VERIFIED, write=UNVERIFIED, handoff=UNKNOWN, activity=UNKNOWN",
+      "last_read": null,
+      "last_write": null,
+      "observed_at": "2026-09-26T06:09:15.487513+00:00"
+    }
+  ],
+  "monitor_errors": [],
+  "scope": "Read-only status from reloaded dsmonitor; no operational workflows invoked"
+}

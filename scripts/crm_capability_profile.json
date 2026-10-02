@@ -1,0 +1,41 @@
+{
+  "engine_id": "crm",
+  "url_env": "CRM_BASE_URL",
+  "secret_env": "BOT_API_SECRET",
+  "services": {
+    "domain_merchant": {
+      "inputs": [
+        "intelligence_reports",
+        "recommendations",
+        "execution_requests",
+        "execution_results"
+      ]
+    },
+    "devspace_services": {
+      "inputs": [
+        "leads",
+        "companies",
+        "contacts",
+        "intelligence_reports"
+      ]
+    },
+    "devspace_clients": {
+      "inputs": [
+        "intelligence_reports",
+        "recommendations",
+        "execution_requests",
+        "execution_results"
+      ]
+    },
+    "scholarship_research": {
+      "inputs": [
+        "intelligence_reports"
+      ]
+    },
+    "investor_research": {
+      "inputs": [
+        "intelligence_reports"
+      ]
+    }
+  }
+}

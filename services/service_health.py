@@ -142,10 +142,10 @@ def activity(spec, thresholds, runs, engine, now):
 
 
 def capability(engine, service, contract, engines, contexts, config, now):
-    ttl = config.get('capability_seconds', 60)
+    ttl = config.get('engine_capability_seconds', config.get('capability_seconds', 60))
     evidence, dependencies = [], []
     reported = engine.get('service_capabilities', {}).get(service, {})
-    valid = fresh(reported.get('checked_at'), now, ttl) and set(config.get('organization_ids', [])) <= set(reported.get('organization_ids', []))
+    valid = fresh(reported.get('checked_at'), now, ttl) and set(config.get('service_organization_ids', {}).get(service, config.get('organization_ids', []))) <= set(reported.get('organization_ids', []))
     for dep in contract.get('dependencies', []):
         source = engines.get(dep, {})
         checks = source.get('checks', [])
@@ -218,11 +218,11 @@ def upgrade(overview, runs, engines, contexts, config, now=None):
                      and e.get('event_type')=='write_persisted' and e['status']=='COMPLETED'
                      and e.get('metadata', {}).get('table') in contract.get('outputs', []) and e.get('metadata', {}).get('record_id')]
         last_write = max([at for at in [last_write]+[timestamp(e.get('timestamp')) for e in persisted] if at], default=None)
-        required_orgs = set(config.get('organization_ids', []))
+        required_orgs = set(config.get('service_organization_ids', {}).get(service, config.get('organization_ids', [])))
         verified_pairs = {(r.get('organization_id'), r['table']) for r in outputs if fresh(r.get('created_at'), now, write_ttl)}
         verified_pairs.update((e.get('organization_id'), e['metadata']['table']) for e in persisted if fresh(e.get('timestamp'), now, write_ttl))
         if contract.get('outputs') and required_orgs and all((org, table) in verified_pairs for org in required_orgs for table in contract['outputs']): write = 'VERIFIED'
-        if report.get('write_status') in ('VERIFIED', 'FAILED', 'UNVERIFIED'): write = report['write_status']
+        if report.get('write_status') in ('VERIFIED', 'FAILED'): write = report['write_status']
         write_failures = [e for r in relevant for e in r.get('events', []) if e['engine_id']==eid
                           and e.get('event_type')=='write_persisted' and e['status']=='FAILED'
                           and e.get('metadata', {}).get('table') in contract.get('outputs', [])

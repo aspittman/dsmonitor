@@ -172,3 +172,88 @@ for exact status rules, engine health-report instrumentation, configuration,
 read-only live validation, query/cache costs and remaining UNKNOWN handoffs.
 The latest diagnosis is in [service-health-validation.json](docs/service-health-validation.json);
 earlier diagnosis sections above describe earlier observations.
+
+Engine-owned diagnostics are now installed across the sibling repositories and
+published every two minutes. See [the engine capability report](docs/ENGINE_CAPABILITY_REPORT.md)
+for live verification, receipt hooks, the new bounded CRM endpoint, deployment
+limitations and the remaining write/handoff evidence needed for healthy cells.
+
+## On-demand domain diagnostic cycle
+
+Run one configured topic through fresh Mmonolith research, CRM publication/readback,
+Decision Engine evaluation, and DevSpace One read-access checks:
+
+```bash
+venv/bin/python scripts/domain_diagnostic.py --topic loans
+# Optional: --organization UUID --timeout 300
+```
+
+The organization must be in `DSMONITOR_ORGANIZATION_IDS`; the default comes from
+`domain_daily.json` or the existing Domain Merchant environment. Topics and evidence
+files come from `scripts/domain_daily.json`. Each invocation uses a unique research
+run key, so it does not replay the daily publication bundle. Providers may still
+reuse their normal caches. Billed keywords run only when the topic explicitly sets
+`with_keywords: true`.
+
+This is an **operational CLI**: it publishes research and persists decisions and
+possibly recommendations in CRM. It uses the existing daily-job credentials and
+engine policies. It does not approve, claim or execute requests, buy domains, or
+send outreach. The dashboard remains GET-only; opening Diagnostics never launches
+engine work. Normal scheduled jobs are unchanged.
+
+A shared workflow/correlation ID is attached to research publication and decision
+persistence using existing engine interfaces. The report records the exact report
+IDs selected by Decision Engine. A successful command without matching lineage is
+not considered a verified handoff. Another scheduled run can publish a newer report;
+if that happens, the diagnostic flags the mismatch instead of claiming success.
+
+Open the **Diagnostics** tab for status, timestamps, evidence, owner and next action
+for each handoff and gap. Reports are also available from `GET /api/diagnostics` and
+`data/diagnostics/<workflow_run_id>.json` (or `DSMONITOR_DIAGNOSTIC_DIR`). Dashboard
+results are restricted to configured organizations and sanitized. Reports are
+point-in-time observations, not continuous health or execution proof.
+
+Statuses distinguish `FAILED` operations, `MISSING_INPUT`, `CONFIGURATION_GAP`,
+`POLICY_BLOCKED` decisions, and `UNVERIFIED` handoffs. Exit codes are 0 for readiness,
+2 for a completed cycle with blockers, and 1 for failure. Readiness means only
+ready for a separately approved review; execution is always marked `NOT_RUN`.
+Only one diagnostic per organization runs at a time. Stage timeouts are bounded;
+a timed-out write may have reached CRM, so inspect its run before repeating it.
+An interrupted launcher leaves a report with no completion timestamp, displayed
+as running or interrupted. Local diagnostic history is retained until removed.
+
+## Current readiness and freshness
+
+Dsmonitor now starts an independent GET-only capability scheduler with the web
+application. Every 45 seconds it checks the configured engine credentials against
+CRM's bounded `/api/bot/monitoring-capabilities` endpoint. It never launches a
+business job. Existing manual capability commands share the same exclusive lock.
+A worker failure publishes UNKNOWN; stopped publishers expire after 90 seconds.
+Missing endpoints no longer trigger downloads of unbounded historical contexts.
+
+Cards and service cells show **current readiness**, its check time, expiry, reason,
+owner and next action. Connectivity, required reads and configuration must all be
+verified to show READY. Adapter registration is configuration evidence, not proof
+that execution works. Write receipts, last-run outcomes, unresolved failures and
+observed handoffs are historical evidence displayed separately. A failed old run
+cannot turn a currently reachable engine offline, and successful old work cannot
+make its current readiness green.
+
+The API recomputes expiry on every snapshot read. If collection stops updating,
+all live status expires after 45 seconds, even while Flask still serves requests;
+`/healthz` returns 503 for stale or missing collection. The browser independently
+expires current badges when updates stop arriving, using elapsed monotonic time
+from the server timestamp. Fetches have an eight-second timeout. Historical
+outcomes retain their original timestamps and are not relabeled as new failures.
+
+`DSMONITOR_PROBE_INTERVAL_SECONDS` is constrained to 30–60 seconds (default 45).
+`DSMONITOR_ENGINE_CAPABILITY_SECONDS` defaults to 90, and
+`DSMONITOR_SNAPSHOT_MAX_AGE_SECONDS` to 45. Readiness describes the configured
+launcher environment on this machine; it is not a probe from a remote worker host.
+
+CRM history uses `/api/bot/monitoring-context`: fixed columns, same-organization
+filters, at most 100 recent records per table, no candidate arrays or execution
+payloads. Missing tables and unavailable historical links remain unverified; the
+bounded window is not a complete history. This endpoint and the readiness endpoint
+require deployment to the CRM Git-connected Vercel project. No schema migration,
+new credential or write-permission change is needed.
