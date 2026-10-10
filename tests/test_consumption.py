@@ -48,3 +48,29 @@ def test_usage_endpoint_is_local_and_rejects_invalid_windows(tmp_path):
     assert client.get('/api/consumption?days=365').status_code==400
     assert client.get('/api/consumption?days=1').json['window_days']==1
     assert client.get('/api/consumption',base_url='http://evil.example').status_code==403
+
+def test_warning_thresholds_use_current_utc_day_and_exclude_local(monkeypatch):
+    with ds_usage.actor('engine-a','research'):
+        ds_usage.record('https://research.example/data',received=2*1024*1024)
+        ds_usage.record('http://localhost/data',received=100*1024*1024)
+    result=ds_usage.summary()
+    assert len(result['alerts'])==1
+    alert=result['alerts'][0]
+    assert alert['engine']=='engine-a' and alert['process']=='research'
+    assert alert['bytes']==2*1024*1024
+    assert alert['largest_response_bytes']==2*1024*1024
+    assert alert['reasons']==['A large response was downloaded today']
+    assert result['rows'][0]['largest_response_bytes']==100*1024*1024
+    monkeypatch.setattr(ds_usage.time,'time',lambda: 0)
+    assert ds_usage.summary()['alerts']==[]
+
+def test_accounting_migrates_existing_database(monkeypatch):
+    import sqlite3
+    path=ds_usage.database()
+    with sqlite3.connect(path) as db:
+        db.execute('''CREATE TABLE usage_hourly(hour INTEGER,engine TEXT,process TEXT,provider TEXT,
+          endpoint TEXT,requests INTEGER DEFAULT 0,sent INTEGER DEFAULT 0,received INTEGER DEFAULT 0,
+          errors INTEGER DEFAULT 0,suppressed INTEGER DEFAULT 0,duration_ms INTEGER DEFAULT 0,
+          PRIMARY KEY(hour,engine,process,provider,endpoint))''')
+    ds_usage.record('https://example.org/data',received=7)
+    assert ds_usage.summary()['rows'][0]['largest_response_bytes']==7

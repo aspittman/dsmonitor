@@ -37,6 +37,12 @@ def connect():
         CREATE TABLE IF NOT EXISTS cloud_backoff(provider TEXT PRIMARY KEY, until REAL, status INTEGER);
         CREATE TABLE IF NOT EXISTS usage_meta(key TEXT PRIMARY KEY, value TEXT);
         ''')
+        if 'largest_response' not in {r[1] for r in db.execute('PRAGMA table_info(usage_hourly)')}:
+            try:
+                db.execute('ALTER TABLE usage_hourly ADD COLUMN largest_response INTEGER DEFAULT 0')
+            except sqlite3.OperationalError:
+                if 'largest_response' not in {r[1] for r in db.execute('PRAGMA table_info(usage_hourly)')}:
+                    raise
         db.execute("INSERT OR IGNORE INTO usage_meta VALUES('started_at',?)", (datetime.now(timezone.utc).isoformat(),))
         yield db
         db.commit()
@@ -83,14 +89,14 @@ def record(url, sent=0, received=0, status=200, elapsed=0, suppressed=False):
     engine, process = identity()
     try:
         with connect() as db:
-            db.execute('''INSERT INTO usage_hourly VALUES(?,?,?,?,?,?,?,?,?,?,?)
+            db.execute('''INSERT INTO usage_hourly(hour,engine,process,provider,endpoint,requests,sent,received,errors,suppressed,duration_ms,largest_response) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
               ON CONFLICT(hour,engine,process,provider,endpoint) DO UPDATE SET
               requests=requests+excluded.requests,sent=sent+excluded.sent,received=received+excluded.received,
               errors=errors+excluded.errors,suppressed=suppressed+excluded.suppressed,
-              duration_ms=duration_ms+excluded.duration_ms''',
+              duration_ms=duration_ms+excluded.duration_ms,largest_response=max(largest_response,excluded.largest_response)''',
               (int(time.time() // 3600) * 3600, engine[:80], process[:100], provider, endpoint,
                int(not suppressed), max(0, int(sent)), max(0, int(received)),
-               int(not suppressed and (status == 0 or status >= 400)), int(suppressed), int(elapsed * 1000)))
+               int(not suppressed and (status == 0 or status >= 400)), int(suppressed), int(elapsed * 1000), max(0, int(received))))
             if provider in ('vercel', 'supabase') and status in (402, 429, 503):
                 delay = 900 if status in (402, 429) else 120
                 db.execute('''INSERT INTO cloud_backoff VALUES(?,?,?) ON CONFLICT(provider)
@@ -120,7 +126,7 @@ def summary(days=7):
         db.row_factory = sqlite3.Row
         rows = [dict(row) for row in db.execute('''SELECT engine,process,provider,endpoint,
           sum(requests) requests,sum(sent) sent_bytes,sum(received) received_bytes,
-          sum(errors) errors,sum(suppressed) suppressed,sum(duration_ms) duration_ms
+          sum(errors) errors,sum(suppressed) suppressed,sum(duration_ms) duration_ms,max(largest_response) largest_response_bytes
           FROM usage_hourly WHERE hour>=? GROUP BY engine,process,provider,endpoint
           ORDER BY sum(received)+sum(sent) DESC''', (time.time() - days * 86400,))]
         started = db.execute("SELECT value FROM usage_meta WHERE key='started_at'").fetchone()[0]
@@ -128,15 +134,21 @@ def summary(days=7):
         daily = [dict(r) for r in db.execute('''SELECT date(hour,'unixepoch') day,sum(sent) sent_bytes,
           sum(received) received_bytes,sum(requests) requests FROM usage_hourly WHERE hour>=?
           GROUP BY day ORDER BY day''', (time.time() - days * 86400,))]
+        today = [dict(r) for r in db.execute('''SELECT engine,process,sum(sent)+sum(received) bytes,
+          sum(requests) requests,max(largest_response) largest_response_bytes FROM usage_hourly
+          WHERE hour>=? AND hour<? AND provider!='local' GROUP BY engine,process''',
+          (int(time.time()//86400)*86400, (int(time.time()//86400)+1)*86400))]
+    from usage_limits import evaluate
+    alerts, thresholds = evaluate(today)
     provider_usage = {}
     try:
         provider_usage = json.loads((ROOT / 'data/provider-usage.json').read_text())
     except (OSError, ValueError):
         pass
     return {'started_at': started, 'window_days': days, 'rows': rows, 'daily': daily, 'backoff': backoff,
-            'provider_usage': provider_usage,
+            'provider_usage': provider_usage, 'alerts': alerts, 'thresholds': thresholds,
             'totals': {key: sum(r[key] for r in rows) for key in ('requests', 'sent_bytes', 'received_bytes', 'errors', 'suppressed')},
-            'coverage': 'Instrumented local Python HTTP calls only, starting at the time shown. Body bytes exclude TLS/headers and are not provider billing totals. Streaming/error response bodies, CRM-to-Supabase traffic, database wire traffic, browsers, and remote workers are not included. Log ingestion is a separate provider metric.'}
+            'coverage': 'Instrumented local Python HTTP calls only, starting at the time shown. Decoded body bytes exclude compression effects, TLS/headers and are not provider billing totals. Streaming and some error response bodies, CRM-to-Supabase traffic, database wire traffic, browsers, and remote workers are not included. Log ingestion is a separate provider metric.'}
 
 
 class CountedResponse:

@@ -11,7 +11,12 @@ def collect(config):
         if config['supabase_dsn']:
             with readonly_postgres(config['supabase_dsn'], config['timeout_seconds']) as db:
                 db.execute('SELECT 1').fetchone()
+                if config.get('supabase_overview'):
+                    row=db.execute('SELECT public.dsmonitor_overview() AS overview').fetchone()
+                    result['database_overview']=row['overview']
             reason = 'Independent PostgreSQL SELECT 1 succeeded in a read-only session; schema/permissions not verified'
+            if config.get('supabase_overview'):
+                reason = 'Direct read-only PostgreSQL connection and aggregate operational summary succeeded'
         else:
             rows = get_json(config['supabase_url'].rstrip('/')+'/rest/v1/organizations', config['timeout_seconds'],
                             {'apikey':config['supabase_key'], 'Authorization':'Bearer '+config['supabase_key']}, '?select=id&limit=1')

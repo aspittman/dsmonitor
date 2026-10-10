@@ -42,8 +42,10 @@ def create_app(config=None, start_collector=True):
             raw=request.args.get('days','7')
             if raw not in ('1','7','30'): return jsonify({'error':'Choose 1, 7, or 30 days'}),400
             days=int(raw)
-            if days not in (1,7,30): return jsonify({'error':'Choose 1, 7, or 30 days'}),400
-            return jsonify(ds_usage.summary(days))
+            data=ds_usage.summary(days)
+            infrastructure=next((e for e in monitor.snapshot().get('engines',[]) if e.get('engine_id')=='supabase'),{})
+            data['database_overview']=infrastructure.get('database_overview')
+            return jsonify(data)
         except Exception:
             return jsonify({'error':'Local consumption accounting unavailable'}),503
 
