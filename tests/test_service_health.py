@@ -203,7 +203,8 @@ def test_transition_recovery_and_restart(tmp_path):
 def test_not_configured_does_not_count_as_problem():
     result=overview([],{},now=NOW)
     cells={c['engine_id']:c for c in result['matrix'] if c['service_id']=='investor_research'}
-    assert all(cells[e]['status']=='NOT_CONFIGURED' for e in ('devspace_one','dsorchestrator'))
+    assert cells['devspace_one']['status']=='NOT_CONFIGURED'
+    assert cells['dsorchestrator']['status']=='UNKNOWN'
     assert all(cells[e]['status']=='UNKNOWN' for e in ('mmonolith','decision_engine','crm'))
     assert not result['pipeline_problems']
 

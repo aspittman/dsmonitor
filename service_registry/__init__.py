@@ -103,6 +103,17 @@ for product in ('scholarship_research','investor_research'):
         note='Global product intelligence and profile-specific matching are implemented. Organization enablement, source access and profiles must be verified. DevSpace One execution and orchestrator production adapters are not configured; they are not required for the research/matching path.')
 
 
+# Local orchestration coordinates implemented research/advisory stages only.
+for service in ('devspace_services', 'devspace_clients', 'scholarship_research', 'investor_research'):
+    DEFAULTS[service]['coordinator'] = 'dsorchestrator'
+    DEFAULTS[service]['engines']['dsorchestrator'] = {
+        'inputs': ['workflow_runs', 'stage_runs', 'intelligence_reports', 'recommendations'],
+        'outputs': ['stage_runs'], 'dependencies': ['crm']}
+    DEFAULTS[service]['note'] += ' Local dsorchestrator adapters coordinate research and service-scoped advisory decisions. Orchestrator completion covers those two stages; approval, draft execution and feedback are separate paths. No orchestrator schedule is activated.'
+for service, app in (('scholarship_research', 'Schopath'), ('investor_research', 'Investorpath')):
+    DEFAULTS[service]['note'] = (app + ' backend research and profile matching are implemented and have local dsorchestrator adapters. Shared PostgreSQL, organization enablement, source access and matching profiles must be verified. App catalog/profile transport is separate and is not activated by registering these adapters. No automatic schedule, application submission or investor outreach is configured.')
+
+
 def registry(config):
     result = deepcopy(DEFAULTS)
     for key, value in config.get('trace_registry', {}).items():

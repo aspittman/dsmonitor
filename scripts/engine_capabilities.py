@@ -26,7 +26,9 @@ def _cycle(settings):
         engine,repo=pair
         environment = shared if engine!='dsorchestrator' else {**os.environ,**read_env(base/repo/'.env')}
         environment={**environment,'DEVSPACE_DIAGNOSTIC_SCOPE':'domain daily launcher environment' if engine!='dsorchestrator' else 'dsorchestrator own environment'}
-        environment={**environment,'DEVSPACE_SERVICE_ORGANIZATIONS':json.dumps(settings.get('service_organization_ids',{}))}
+        environment={**environment,'DEVSPACE_SERVICE_ORGANIZATIONS':json.dumps(settings.get('service_organization_ids',{})),
+            'DS_USAGE_ENGINE':'dsmonitor', 'DS_USAGE_PROCESS':'capability-'+engine,
+            'PYTHONPATH':os.pathsep.join((str(ROOT/'instrumentation'),str(ROOT/'.domain_deps'),environment.get('PYTHONPATH','')))}
         if engine=='mmonolith':
             client_env=read_env(base/'devspace-crm/.env.local')
             environment.update(CLIENT_SUPABASE_URL=client_env.get('NEXT_PUBLIC_SUPABASE_URL',''), CLIENT_SUPABASE_KEY=client_env.get('SUPABASE_SERVICE_ROLE_KEY',''))
@@ -66,15 +68,21 @@ def cycle(settings):
     with path.open('a') as lock:
         try: fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         except BlockingIOError: return [{'result':'Probe cycle already running'}]
+        stamp=ROOT/'data/engine-capabilities.last-cycle'
+        try:
+            if time.time()-float(stamp.read_text()) < settings.get('probe_interval_seconds',300):
+                return [{'result':'Shared probe interval not due'}]
+        except (OSError,ValueError): pass
+        stamp.write_text(str(time.time()))
         return _cycle(settings)
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--watch',action='store_true')
-    parser.add_argument('--interval',type=int,default=45)
+    parser.add_argument('--interval',type=int,default=300)
     args=parser.parse_args()
-    if args.interval<30 or args.interval>120:parser.error('Interval must be 30–120 seconds')
+    if args.interval<30 or args.interval>3600:parser.error('Interval must be 30–3600 seconds')
     settings=load_config()
     while True:
         print(json.dumps(cycle(settings)),flush=True)

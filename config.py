@@ -24,9 +24,9 @@ def load_config():
     # Existing credentials stay server-side; explicit monitor settings override discovery.
     defaults = {
         'projects': str(base), 'refresh_seconds': 10, 'snapshot_seconds': 120,
-        'timeout_seconds': 3, 'crm_context_seconds': 60, 'retention_days': 30, 'limit': 200,
-        'capability_seconds': 45, 'engine_capability_seconds': 90,
-        'probe_interval_seconds': 45, 'probe_timeout_seconds': 35, 'snapshot_max_age_seconds': 45,
+        'timeout_seconds': 3, 'crm_context_seconds': 900, 'retention_days': 30, 'limit': 200,
+        'capability_seconds': 300, 'engine_capability_seconds': 900,
+        'probe_interval_seconds': 300, 'probe_timeout_seconds': 35, 'snapshot_max_age_seconds': 45,
         'capability_files': {engine: str(ROOT / 'data/capabilities' / (engine+'.json')) for engine in ('mmonolith','decision_engine','devspace_one','dsorchestrator','crm')}, 'write_evidence_seconds': 86400,
         'diagnostic_dir': str(ROOT / 'data/diagnostics'),
         'database': str(ROOT / 'data/dsmonitor.db'), 'port': 5055,
@@ -52,8 +52,8 @@ def load_config():
     for key in ('refresh_seconds', 'snapshot_seconds', 'timeout_seconds', 'retention_days', 'limit', 'heartbeat_max_age', 'crm_context_seconds', 'capability_seconds', 'engine_capability_seconds', 'write_evidence_seconds', 'probe_interval_seconds', 'probe_timeout_seconds', 'snapshot_max_age_seconds'):
         if defaults[key] <= 0:
             raise ValueError(key + ' must be positive')
-    if not 30 <= defaults['probe_interval_seconds'] <= 60:
-        raise ValueError('probe_interval_seconds must be 30–60')
+    if not 30 <= defaults['probe_interval_seconds'] <= 3600:
+        raise ValueError('probe_interval_seconds must be 30–3600')
     if defaults['engine_capability_seconds'] <= defaults['probe_interval_seconds']:
         raise ValueError('Engine capability expiry must exceed the probe interval')
     if len(defaults['organization_ids']) > 20:

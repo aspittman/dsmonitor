@@ -2,10 +2,15 @@
 from flask import Flask, jsonify, render_template, request, abort
 from config import load_config
 from services.monitor import Monitor
+import ds_usage
+ds_usage.install()
 
 
 def create_app(config=None, start_collector=True):
     settings=config or load_config()
+    if settings.get("crm_url"):
+        import os
+        os.environ.setdefault("CRM_BASE_URL", settings["crm_url"])
     app=Flask(__name__)
     monitor=Monitor(settings)
     app.extensions['monitor']=monitor
@@ -30,6 +35,17 @@ def create_app(config=None, start_collector=True):
 
     @app.get('/api/status')
     def status(): return jsonify(monitor.snapshot())
+
+    @app.get('/api/consumption')
+    def consumption():
+        try:
+            raw=request.args.get('days','7')
+            if raw not in ('1','7','30'): return jsonify({'error':'Choose 1, 7, or 30 days'}),400
+            days=int(raw)
+            if days not in (1,7,30): return jsonify({'error':'Choose 1, 7, or 30 days'}),400
+            return jsonify(ds_usage.summary(days))
+        except Exception:
+            return jsonify({'error':'Local consumption accounting unavailable'}),503
 
     @app.get('/api/diagnostics')
     def diagnostics():

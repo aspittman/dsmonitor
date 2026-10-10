@@ -1,0 +1,54 @@
+ * Tip: There are .env files present. Install python-dotenv to use them.
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5055
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [10/Oct/2026 10:33:53] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:33:56] "GET /api/consumption HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:33:57] "GET /healthz HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:19] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:43] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/freshness.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/evidence.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/diagnostics.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/consumption.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /static/traces.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [10/Oct/2026 10:34:44] "GET /api/diagnostics HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:45] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:45] "GET /api/consumption?days=7 HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:46] "GET /api/consumption?days=1 HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:34:46] "GET /api/consumption?days=1 HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:35:11] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:35:35] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:36:03] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:36:36] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:36:57] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:37:15] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:37:39] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:37:58] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:38:19] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:38:48] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:39:08] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:39:25] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:39:46] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:04] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/traces.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/freshness.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/consumption.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/diagnostics.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:06] "GET /static/evidence.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [10/Oct/2026 10:40:07] "GET /api/diagnostics HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:07] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:13] "GET /api/consumption?days=7 HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:17] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:27] "GET /api/status HTTP/1.1" 200 -
+127.0.0.1 - - [10/Oct/2026 10:40:37] "GET /api/status HTTP/1.1" 200 -

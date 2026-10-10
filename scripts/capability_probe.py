@@ -94,6 +94,9 @@ def probe(profile, organizations, env=None, get=get_json):
             report['configuration_status'] = 'UNVERIFIED'
         else:
             report['configuration_status'] = 'VERIFIED'
+        if profile['engine_id'] == 'dsorchestrator' and service in ('devspace_services', 'devspace_clients', 'scholarship_research', 'investor_research') and not env.get('SUPABASE_DB_URL'):
+            report.update(configuration_status='BLOCKED',
+                next_action='Set SUPABASE_DB_URL in dsorchestrator/.env. CRM workflow lineage requires shared PostgreSQL state; local SQLite cannot publish linked service research.')
     return {'engine_id': profile['engine_id'], 'service_capabilities': reports}
 
 

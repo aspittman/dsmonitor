@@ -46,3 +46,61 @@ No Afternic rows or domain purchase rows found.
 No CRM domains are explicitly marked purchased or listed; no Apollo drafts created.
 Synced 0 Apollo Outreach responses to CRM
 {"status": "no_approved_apollo_outreach"}
+No Afternic rows or domain purchase rows found.
+No CRM domains are explicitly marked purchased or listed; no Apollo drafts created.
+Synced 0 Apollo Outreach responses to CRM
+{"status": "no_approved_apollo_outreach"}
+No Afternic rows or domain purchase rows found.
+No CRM domains are explicitly marked purchased or listed; no Apollo drafts created.
+Synced 0 Apollo Outreach responses to CRM
+{"status": "no_approved_apollo_outreach"}
+No Afternic rows or domain purchase rows found.
+No CRM domains are explicitly marked purchased or listed; no Apollo drafts created.
+Synced 0 Apollo Outreach responses to CRM
+{"status": "no_approved_apollo_outreach"}
+No Afternic rows or domain purchase rows found.
+No CRM domains are explicitly marked purchased or listed; no Apollo drafts created.
+Synced 0 Apollo Outreach responses to CRM
+{"status": "no_approved_apollo_outreach"}
+No Afternic rows or domain purchase rows found.
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/devspace-one/jobs/run_service.py", line 110, in <module>
+    main()
+  File "/home/aaron/MyBotz/devspace-one/jobs/run_service.py", line 90, in main
+    signals = crm.get_domain_signals(
+  File "/home/aaron/MyBotz/devspace-one/core/crm_client.py", line 103, in get_domain_signals
+    return self._get("/api/bot/domain-signals", params=params)
+  File "/home/aaron/MyBotz/devspace-one/core/crm_client.py", line 37, in _get
+    raise Exception(f"CRM GET failed: {response.status_code}")
+Exception: CRM GET failed: 402
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 98, in <module>
+    main()
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 92, in main
+    run('devspace-one', ['jobs/run_service.py', 'apollo_outreach',
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 32, in run
+    subprocess.run([sys.executable, *args], cwd=ROOT / repo,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', 'jobs/run_service.py', 'apollo_outreach', '--organization-id', '06eaf14d-a535-4ccc-ad17-286da58d3fdd']' returned non-zero exit status 1.
+No Afternic rows or domain purchase rows found.
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/devspace-one/jobs/run_service.py", line 110, in <module>
+    main()
+  File "/home/aaron/MyBotz/devspace-one/jobs/run_service.py", line 90, in main
+    signals = crm.get_domain_signals(
+  File "/home/aaron/MyBotz/devspace-one/core/crm_client.py", line 103, in get_domain_signals
+    return self._get("/api/bot/domain-signals", params=params)
+  File "/home/aaron/MyBotz/devspace-one/core/crm_client.py", line 37, in _get
+    raise Exception(f"CRM GET failed: {response.status_code}")
+Exception: CRM GET failed: 402
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 98, in <module>
+    main()
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 92, in main
+    run('devspace-one', ['jobs/run_service.py', 'apollo_outreach',
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 32, in run
+    subprocess.run([sys.executable, *args], cwd=ROOT / repo,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', 'jobs/run_service.py', 'apollo_outreach', '--organization-id', '06eaf14d-a535-4ccc-ad17-286da58d3fdd']' returned non-zero exit status 1.

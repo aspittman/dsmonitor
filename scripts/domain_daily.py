@@ -27,8 +27,9 @@ def dotenv(path):
 
 def run(repo, args, environment):
     environment = {**environment, 'PYTHONPATH': os.pathsep.join((
-        str(ROOT / repo), str(ROOT / 'dsmonitor/.domain_deps'),
+        str(ROOT / repo), str(ROOT / 'dsmonitor/instrumentation'), str(ROOT / 'dsmonitor/.domain_deps'),
         environment.get('PYTHONPATH', '')))}
+    environment.update(DS_USAGE_ENGINE={'mmonolith':'mmonolith','decision_engine':'decision_engine','devspace-one':'devspace_one'}[repo], DS_USAGE_PROCESS='domain-'+(sys.argv[1] if len(sys.argv)>1 else 'job'))
     subprocess.run([sys.executable, *args], cwd=ROOT / repo,
                    env=environment, check=True)
 

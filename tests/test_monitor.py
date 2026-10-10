@@ -186,6 +186,7 @@ def test_malformed_crm_record_does_not_hide_independent_workflows(config,monkeyp
 
 
 def test_crm_context_and_capability_have_separate_cache_ttls(config,monkeypatch):
+    config.update(capability_seconds=60,crm_context_seconds=900)
     config.update(crm_url='http://localhost:1',crm_token='test',organization_ids=[ORG])
     calls=[]
     def get(url,*a,**k):

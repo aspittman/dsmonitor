@@ -14,6 +14,7 @@ from services.workflow_trace_service import enrich
 from services.process_service import crm_processes, crm_activity
 from services.trace_service import normalize, project, overview
 from services.evidence_service import provenance, shared_state
+from ds_usage import actor
 
 
 class Monitor:
@@ -39,7 +40,10 @@ class Monitor:
               'workflows':lambda:dsorchestrator.collect(self.config)}
         results={}
         with ThreadPoolExecutor(max_workers=7) as pool:
-            futures={pool.submit(job):key for key,job in jobs.items()}
+            def measured(key, job):
+                with actor('dsmonitor', key+'-monitoring'):
+                    return job()
+            futures={pool.submit(measured,key,job):key for key,job in jobs.items()}
             for future in as_completed(futures):
                 key=futures[future]
                 try: results[key]=future.result()

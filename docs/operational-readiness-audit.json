@@ -1,0 +1,457 @@
+{
+  "checked_at": "2026-10-05T16:57:32.600028+00:00",
+  "checks": [
+    {
+      "check": "workflow_runs schema access",
+      "http_status": 200
+    },
+    {
+      "check": "stage_runs schema access",
+      "http_status": 200
+    },
+    {
+      "check": "intelligence_reports schema access",
+      "http_status": 200
+    },
+    {
+      "check": "feedback_evaluations schema access",
+      "http_status": 200
+    },
+    {
+      "check": "service_registry schema access",
+      "http_status": 200
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "62539265-e1ae-4e14-8360-416747590585",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "62539265-e1ae-4e14-8360-416747590585",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "62539265-e1ae-4e14-8360-416747590585",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "0da3f571-a388-490f-90b9-e08e3609159f",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "0da3f571-a388-490f-90b9-e08e3609159f",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "0da3f571-a388-490f-90b9-e08e3609159f",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "88c1cb4f-e471-4d4b-8708-a87b3f4a229c",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "88c1cb4f-e471-4d4b-8708-a87b3f4a229c",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "88c1cb4f-e471-4d4b-8708-a87b3f4a229c",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "76b76aa2-8989-4fe9-a234-c16ddcbce989",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "76b76aa2-8989-4fe9-a234-c16ddcbce989",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "76b76aa2-8989-4fe9-a234-c16ddcbce989",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "20ea8b66-cc49-48e5-972e-2e89ed9a27e5",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "20ea8b66-cc49-48e5-972e-2e89ed9a27e5",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "20ea8b66-cc49-48e5-972e-2e89ed9a27e5",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_clients organization configuration",
+      "organization_id": "fe127a4a-3e4a-4bbe-b85a-9d09ce396e2d",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": true
+    },
+    {
+      "check": "devspace_clients dsorchestrator deployed capability route",
+      "organization_id": "fe127a4a-3e4a-4bbe-b85a-9d09ce396e2d",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_clients devspace_one deployed capability route",
+      "organization_id": "fe127a4a-3e4a-4bbe-b85a-9d09ce396e2d",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendation_evidence": "VERIFIED",
+        "execution_results": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    },
+    {
+      "check": "devspace_services organization configuration",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": false
+    },
+    {
+      "check": "devspace_services dsorchestrator deployed capability route",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "devspace_services devspace_one deployed capability route",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "reads": {
+        "leads": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": false
+      }
+    },
+    {
+      "check": "scholarship_research organization configuration",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": false
+    },
+    {
+      "check": "scholarship_research dsorchestrator deployed capability route",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "investor_research organization configuration",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": false
+    },
+    {
+      "check": "investor_research dsorchestrator deployed capability route",
+      "organization_id": "2ee8ba95-35f4-4af9-b746-12071ed8815a",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "domain_merchant organization configuration",
+      "organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd",
+      "http_status": 200,
+      "enabled": true,
+      "matching_profile_count": 0,
+      "has_client_research": false
+    },
+    {
+      "check": "domain_merchant dsorchestrator deployed capability route",
+      "organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd",
+      "http_status": 200,
+      "reads": {
+        "workflow_runs": "VERIFIED",
+        "stage_runs": "VERIFIED",
+        "intelligence_reports": "VERIFIED",
+        "recommendations": "VERIFIED",
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true
+      }
+    },
+    {
+      "check": "domain_merchant devspace_one deployed capability route",
+      "organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd",
+      "http_status": 200,
+      "reads": {
+        "execution_requests": "VERIFIED"
+      },
+      "configuration": {
+        "verified": true,
+        "service_enabled": true,
+        "adapter_ready": true
+      }
+    }
+  ],
+  "configuration": {
+    "shared_postgres_configured": true
+  },
+  "execution_capabilities": [
+    {
+      "service_key": "devspace_outreach",
+      "status": "AVAILABLE",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "prepare_outreach"
+      ]
+    },
+    {
+      "service_key": "apollo_outreach",
+      "status": "AVAILABLE",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "prepare_outreach"
+      ]
+    },
+    {
+      "service_key": "google_ads",
+      "status": "PLANNED",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "create_search_campaign"
+      ]
+    },
+    {
+      "service_key": "meta_ads",
+      "status": "PLANNED",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "create_meta_campaign"
+      ]
+    },
+    {
+      "service_key": "seo",
+      "status": "PLANNED",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "create_seo_plan"
+      ]
+    },
+    {
+      "service_key": "landing_page",
+      "status": "PLANNED",
+      "adapter_ready": false,
+      "allowed_actions": [
+        "optimize_landing_page"
+      ]
+    },
+    {
+      "service_key": "domain_merchant",
+      "status": "AVAILABLE",
+      "adapter_ready": true,
+      "allowed_actions": [
+        "review_domain_evidence"
+      ]
+    },
+    {
+      "service_key": "devspace_clients",
+      "status": "AVAILABLE",
+      "adapter_ready": true,
+      "allowed_actions": [
+        "prepare_client_outreach"
+      ]
+    }
+  ],
+  "review_rpc_exposed": {
+    "loop_claim_review": true,
+    "loop_observe_review": true
+  }
+}

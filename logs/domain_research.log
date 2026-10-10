@@ -74,3 +74,75 @@ subprocess.CalledProcessError: Command '['/usr/bin/python3', '-m', 'services.dom
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "6710f887-3d81-45f2-82ec-2443d2f363ee", "path": "data/processed/domain_intelligence/3e188b6e63dfa3d1ea761eea0c1cb055a2d5ee2c095c393ae5f79e670f04ec13.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "76350e02-3b69-4760-a47a-65e51295030d", "path": "data/processed/domain_intelligence/c294be30b35dd92386dae22ab530d15636f7e2a274ee6650a547f5b752f55997.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
 {"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "fae56b42-69d9-46d4-9023-0dbfc864e8ea", "path": "data/processed/domain_intelligence/4c6c521cdaf8b467d924b6a0e20ff4140a4a974c2bd64b48fba9b2eb38e1c975.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "57c52331-fbaa-4b01-9b9b-a24190d987d9", "path": "data/processed/domain_intelligence/9955cdd78f90c99084a98ad84ec801711ee387f028d88fd6cdbc2babc959f24e.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "dd9c6dda-cdd7-4466-bce0-78998dfec0d0", "path": "data/processed/domain_intelligence/e1502e9df27ce7867ba56d46277253affd8e929a9273f9b2b28197f2afa3010b.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "98068744-72af-4122-96d5-22e44d22d7d9", "path": "data/processed/domain_intelligence/acaa4f11f4a26f89b56e8b05cf067365653e91e6b26b78a27b5eebd91c869c65.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "3bfca1e0-af42-4723-9dd2-e0662c17e393", "path": "data/processed/domain_intelligence/a5e75a2ff88d2312ed0b3b130be52962c5449f05a6b9d85ba15da1f068754815.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "3cd1df6a-02c8-4987-91c7-e26e753f0d29", "path": "data/processed/domain_intelligence/0a0d470ec36ab0fe0406b3801fb0be3763009ca92b4ce90012585f1d08442169.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "8fdbdac4-5f66-42d8-a32f-4fe6bf9fdf6b", "path": "data/processed/domain_intelligence/20de3060c6fa6b3ac1e4720b01c855a1267fac6b89b5ac4147e46742d3f0829c.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "98eabc74-cd75-4404-b839-a4baef2e34be", "path": "data/processed/domain_intelligence/1138bf164437fdcb5d8754923ffdebf0d66fbaec323011aebfc4292af35ea6f6.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "c7ca5a75-f3f1-42b7-85a9-713719a92c8d", "path": "data/processed/domain_intelligence/6262e770eeaf07df597404a8c9e7aa1cb1543f0bcd0dcea49934b7f1db5abd9e.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "484c03af-6927-43e2-a951-4a3f9f81ddde", "path": "data/processed/domain_intelligence/82c93d373fe73f0a708a7f9535b77b4a8f76d9c7e96cc4a25017878ebeea4bcf.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "463b7b38-7019-4327-9f7b-5955d8c42aa4", "path": "data/processed/domain_intelligence/e830c7031cd9e93c2d78de5e3f9dab1a907703a8fe4445c0585aadc016f8f8bf.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "5d147537-24f0-4cbd-a0b1-80b3ebd1ae6b", "path": "data/processed/domain_intelligence/55a839af9ca1974f55b77d10f120ebe4150e724686fb0a59b849ec7bdfd89752.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "9a980f2c-b1bd-4238-96fe-126475dc5556", "path": "data/processed/domain_intelligence/d329c329c33576473895419c9b32cf48625a50ed7389a8cb5e082596d431eb91.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "feedback_ids": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "160d5629-f169-4bbc-862b-ef31f57daafe", "path": "data/processed/domain_intelligence/03566282d9de0f3fc7a2fb02a5ee52a7b37d9d067cc7fa4d74250cc867266b8f.json", "candidates": 50, "reported_sales": 300, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "5639cf1d-89cc-4aa7-8946-5899780e6cd2", "path": "data/processed/domain_intelligence/5159dffe0e9122fed2bb4374a9e562044777c3c2e1dea1071ee560147a8507f4.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "1874de17-f758-4034-869e-f30a3ca7bfb7", "path": "data/processed/domain_intelligence/fcdbac32c66e33ee0eb0131731aaeb583738408d5eb5895a826714098b9957bc.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+{"organization_id": "06eaf14d-a535-4ccc-ad17-286da58d3fdd", "intelligence_report_id": "12f9db37-3bba-4f16-b1c9-7a621212dd0a", "path": "data/processed/domain_intelligence/8237e1cc831f452f8f27f1d5778d9e26a5e2b4b10d414e2c557a02dfb32badf7.json", "candidates": 0, "reported_sales": 0, "provider_failures": []}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 44, in <module>
+    if __name__=='__main__': main()
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 23, in main
+    print(json.dumps({'organization_id':args.organization,'feedback_ids':learn(client,args.organization,policy)}))
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/service.py", line 183, in learn
+    context=client.context(org)
+  File "/home/aaron/MyBotz/mmonolith/services/shared/loop.py", line 36, in context
+    data = self.request('GET', 'context', org)
+  File "/home/aaron/MyBotz/mmonolith/services/shared/loop.py", line 27, in request
+    raise RuntimeError('CRM HTTP failure: ' + str(response.status_code))
+RuntimeError: CRM HTTP failure: 402
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 98, in <module>
+    main()
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 58, in main
+    run('mmonolith', ['-m', 'services.domain_intelligence', '--organization', org, '--learn'], common)
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 32, in run
+    subprocess.run([sys.executable, *args], cwd=ROOT / repo,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '-m', 'services.domain_intelligence', '--organization', '06eaf14d-a535-4ccc-ad17-286da58d3fdd', '--learn']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 44, in <module>
+    if __name__=='__main__': main()
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/__main__.py", line 23, in main
+    print(json.dumps({'organization_id':args.organization,'feedback_ids':learn(client,args.organization,policy)}))
+  File "/home/aaron/MyBotz/mmonolith/services/domain_intelligence/service.py", line 183, in learn
+    context=client.context(org)
+  File "/home/aaron/MyBotz/mmonolith/services/shared/loop.py", line 36, in context
+    data = self.request('GET', 'context', org)
+  File "/home/aaron/MyBotz/mmonolith/services/shared/loop.py", line 27, in request
+    raise RuntimeError('CRM HTTP failure: ' + str(response.status_code))
+RuntimeError: CRM HTTP failure: 402
+Traceback (most recent call last):
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 98, in <module>
+    main()
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 58, in main
+    run('mmonolith', ['-m', 'services.domain_intelligence', '--organization', org, '--learn'], common)
+  File "/home/aaron/MyBotz/dsmonitor/scripts/domain_daily.py", line 32, in run
+    subprocess.run([sys.executable, *args], cwd=ROOT / repo,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '-m', 'services.domain_intelligence', '--organization', '06eaf14d-a535-4ccc-ad17-286da58d3fdd', '--learn']' returned non-zero exit status 1.

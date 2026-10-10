@@ -17,8 +17,18 @@ def collect(config, cache=None):
         return engine, contexts, organizations
     headers = {'Authorization':'Bearer ' + config['crm_token']}
     def get(route, org=None):
-        result = get_json(config['crm_url'].rstrip('/')+route, config['timeout_seconds'], headers,
+        from ds_usage import actor
+        failure_key=('failure',route,org)
+        if failure_key in cache and time.monotonic()-cache[failure_key] < config.get('capability_seconds',300):
+            raise ConnectionError('CRM read deferred after recent failure')
+        try:
+            with actor('dsmonitor','crm-history' if org else 'crm-connectivity'):
+                result = get_json(config['crm_url'].rstrip('/')+route, config['timeout_seconds'], headers,
                           '?' + urlencode({'organization_id':org}) if org else '')
+        except Exception:
+            cache[failure_key]=time.monotonic()
+            raise
+        cache.pop(failure_key,None)
         if not isinstance(result, dict) or result.get('success') is not True: raise ValueError('Invalid CRM envelope')
         if route == '/api/bot/monitoring-context':
             return result['data'], result.get('coverage', {})
